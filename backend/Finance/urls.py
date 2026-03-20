@@ -1,7 +1,11 @@
 from .api_views import *
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+
+router = DefaultRouter()
+router.register('transactions', TransactionsViewSet)
+router.register('category', CategoryViewSet)
 
 urlpatterns = [
-    path('category/', CategoryAPIView.as_view(), name='category'),
-    path('transaction/', TransactionAPIView.as_view(), name='transaction'),
+    path('', include(router.urls)),
 ]
