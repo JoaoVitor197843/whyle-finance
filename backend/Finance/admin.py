@@ -13,16 +13,16 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Transaction)
 class TransactionAdmin(admin.ModelAdmin):
-    list_display = ('user', 'Category', 'value', "type", 'created_at', 'updated_at')
+    list_display = ('user', 'Category', 'value', "transaction_type", 'created_at', 'updated_at')
     date_hierarchy = 'created_at'
     ordering = ('created_at',)
-    search_fields = ('user', 'Category__name', "type")
+    search_fields = ('user', 'Category__name', "transaction_type")
     fieldsets = (
     ("User", {
         'fields': ('user',)
     }),
     ("Transaction", {
-        "fields": ("category", "value", "type")
+        "fields": ("category", "value", "transaction_type")
     }))
     def Category(self, obj):
         return obj.category

@@ -4,8 +4,7 @@ class TransactionSerializer(serializers.ModelSerializer):
         model = Transaction
         fields = (
             "id",
-            "user",
             "category",
             "value",
-            "type",
+            "transaction_type",
             "created_at")
