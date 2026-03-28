@@ -6,4 +6,5 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = (
             "id",
             'name',
+            'transaction_type',
             "created_at")

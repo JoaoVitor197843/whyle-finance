@@ -1,0 +1,15 @@
+.navBar {
+    position: fixed;
+    background-color: var(--nav-bar-color);
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 40px;
+    transition: height 0.3s, background-color 0.3s;
+    z-index: 30;
+    overflow: hidden;
+}
+
+.open {
+    height: 80px;
+}
