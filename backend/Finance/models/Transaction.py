@@ -26,5 +26,14 @@ class Transaction(models.Model):
             raise ValidationError(
             'The type of transaction must be the same as the category'
             )
+        if not self.category and not self.transaction_type:
+            raise ValidationError(
+            'Please, specify a category or type of transaction'
+            )
+        elif self.category and not self.transaction_type:
+            self.transaction_type = self.category.transaction_type
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
     def __str__(self) -> str:
         return f"{"+" if self.transaction_type == "income" else "-"}{self.value}"
