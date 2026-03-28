@@ -8,6 +8,7 @@ class Category(models.Model):
     transaction_type = models.CharField(max_length=10, choices=TransactionType.choices)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    
     class Meta:
         verbose_name = 'Category'
         verbose_name_plural = 'Categories'

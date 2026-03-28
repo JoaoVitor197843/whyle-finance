@@ -13,6 +13,7 @@ class Transaction(models.Model):
     transaction_type = models.CharField(max_length=10, choices=TransactionType.choices, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    
     class Meta:
         verbose_name = 'Transaction'
         verbose_name_plural = 'Transactions'
@@ -21,6 +22,7 @@ class Transaction(models.Model):
         constraints = [
             models.CheckConstraint(condition=models.Q(value__gte=Decimal(0.01)), name='value_min_range')
         ]
+
     def clean(self):
         if (self.category and self.transaction_type) and self.category.transaction_type != self.transaction_type:
             raise ValidationError(
@@ -30,10 +32,12 @@ class Transaction(models.Model):
             raise ValidationError(
             'Please, specify a category or type of transaction'
             )
-        elif self.category and not self.transaction_type:
-            self.transaction_type = self.category.transaction_type
+        
     def save(self, *args, **kwargs):
+        if self.category and not self.transaction_type:
+            self.transaction_type = self.category.transaction_type
         self.full_clean()
         super().save(*args, **kwargs)
+
     def __str__(self) -> str:
         return f"{"+" if self.transaction_type == "income" else "-"}{self.value}"

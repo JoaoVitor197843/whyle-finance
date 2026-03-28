@@ -24,9 +24,11 @@ class TransactionAdmin(admin.ModelAdmin):
     ("Transaction", {
         "fields": ("category", "value", "transaction_type")
     }))
+    
     def Category(self, obj):
         return obj.category
     Category.empty_value_display = "None"
+
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
     list_display = ('username', "is_staff", "is_active", "created_at", "updated_at")
