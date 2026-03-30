@@ -1,40 +1,35 @@
 .hamburguerButton {
-    height: 30px;
+    height: 40px;
     width: 40px;
-    margin: 19px 0 16px 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transform-origin: left;
     cursor: pointer;
-    justify-content: start;
-    align-items: start;
-    transform-origin: center;
     transition: 0.3s ease;
     outline: none;
     background: none;
-    color: none;
     border: none;
 }
 
 .hamburguerBars {
-    height: 3px;
+    height: 5px;
     width: 100%;
     background-color: var(--txt-color);
     display: block;
-    margin: 4px 0;
+    margin: 2px 0;
     border-radius: 5px;
     transition: 0.3s ease;
 }
 
 .change .topBar {
-    transform: translateY(8px) rotateZ(-45deg);
+    transform: translateY(9px) rotateZ(-45deg);
 }
 .change .middleBar {
     opacity: 0;
 }
 
 .change .bottomBar {
-    transform: translateY(-6px) rotateZ(45deg);
-}
-
-.change {
-    margin: 10px 0 16px 18px;
-    transform: scale(2);
+    transform: translateY(-9px) rotateZ(45deg);
 }

@@ -12,11 +12,6 @@
     cursor: pointer;
     outline: none;
     transition: 0.3s ease;
-    margin: 0 25px 0 auto;
-}
-
-.change {
-    display: none;
 }
 
 .circle {

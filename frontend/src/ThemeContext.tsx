@@ -1,9 +1,9 @@
 import { createContext } from "react"
 
-
-type ThemeContextType = {
-    theme: string
-    setTheme: React.Dispatch<React.SetStateAction<string>>
+export type Theme = 'light' | 'dark';
+interface ThemeContextType {
+    theme: Theme
+    setTheme: React.Dispatch<React.SetStateAction<Theme>>
 }
 
 export const ThemeContext = createContext<ThemeContextType | null>(null)
