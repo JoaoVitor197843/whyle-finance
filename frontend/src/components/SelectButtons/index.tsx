@@ -17,7 +17,7 @@ export function SelectButtons({ id, title, links, openTab, setTab}: Props) {
     const titleUpper = title.toUpperCase()
     return (
     <div className={styles.container} onMouseEnter={() => setTab(id)} onMouseLeave={() => setTab(null)}>
-        <button className={styles.button} onClick={() => setTab(prev => prev === id ? null : id)} aria-expanded={openTab === id}>
+        <button className={styles.button} aria-expanded={openTab === id}>
             {titleUpper}
         </button>
         <ul className={`${styles.list} ${openTab === id ? styles.listOpened : ""}`}>

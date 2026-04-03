@@ -8,47 +8,15 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django_ratelimit.decorators import ratelimit
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
-from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from django.template.loader import render_to_string
 
 from ..utils.EmailVerifyToken import EmailVerificationTokenGenerator
 from ..utils.email import send_email
-import os
+
 User = get_user_model()
 
-@method_decorator(csrf_exempt, name='dispatch')
 class AuthViewSet(viewsets.ViewSet):
-    def generate_tokens(self, user: User, action: str):
-        refresh = RefreshToken.for_user(user)
-        access = refresh.access_token
-        if action == "login":
-            response = Response({"message": "Login successful"}, status=status.HTTP_200_OK)
-            response.set_cookie(
-            key='access_token',
-            value=str(access),
-            httponly=True,
-            secure=True,  # Set to True in production with HTTPS
-            samesite='Strict'  # Adjust as needed (None, Lax, Strict)
-            )
-            response.set_cookie(
-            key='refresh_token',
-            value=str(refresh),
-            httponly=True,
-            secure=True,  # Set to True in production with HTTPS
-            samesite='Strict'  # Adjust as needed (None, Lax, Strict)
-            )
-        else:
-            response = Response({"message": "Registration successful, please verify your email"}, status=status.HTTP_201_CREATED)
-            token = EmailVerificationTokenGenerator().make_token(user)
-            uid = urlsafe_base64_encode(force_bytes(user.pk))
-            send_email(
-            user.email,
-            'verify your email',
-            f'<h1>Please click the link below to verify your email address:</h1>\n\n<a href=http://{os.getenv('API_DOMAIN')}/api/auth/verify-email?uid={uid}&token={token}>Click here to verify your email</a>'
-            )
-            user.save()
-        return response
-
     
     @action(detail=False, methods=['post'], url_path='login', permission_classes=[AllowAny])
     @method_decorator(ratelimit(key='ip', rate='5/m', block=True))
@@ -60,7 +28,23 @@ class AuthViewSet(viewsets.ViewSet):
             return Response({'error': 'Invalid email or password'}, status=status.HTTP_401_UNAUTHORIZED)
         if not user.is_verified:
             return Response({'error': 'Email not verified, please check your inbox for the verification email'}, status=status.HTTP_403_FORBIDDEN)
-        response = self.generate_tokens(user, "login")
+        refresh = RefreshToken.for_user(user)
+        access = refresh.access_token
+        response = Response({"message": "Login successful"}, status=status.HTTP_200_OK)
+        response.set_cookie(
+        key='access_token',
+        value=str(access),
+        httponly=True,
+        secure=True,  # Set to True in production with HTTPS
+        samesite='Strict'  # Adjust as needed (None, Lax, Strict)
+        )
+        response.set_cookie(
+        key='refresh_token',
+        value=str(refresh),
+        httponly=True,
+        secure=True,  # Set to True in production with HTTPS
+        samesite='Strict'  # Adjust as needed (None, Lax, Strict)
+        )
         return response
 
     @action(detail=False, methods=['post'], url_path='register', permission_classes=[AllowAny])
@@ -82,7 +66,17 @@ class AuthViewSet(viewsets.ViewSet):
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
         user = User.objects.create_user(username=username, email=email, password=password)
-        response = self.generate_tokens(user, "register")
+        response = Response({"message": "Registration successful, please verify your email"}, status=status.HTTP_201_CREATED)
+        token = EmailVerificationTokenGenerator().make_token(user)
+        uid = urlsafe_base64_encode(force_bytes(user.pk))
+        send_email(
+        user.email,
+        'Verify your email',
+        render_to_string("email/verify_email.html", {
+            "uid": uid,
+            "token": token,
+            "username": user.username})
+        )
         user.save()
         return response
 
@@ -154,16 +148,20 @@ class AuthViewSet(viewsets.ViewSet):
     def verify_email(self, request):
         token = request.query_params.get('token')
         uid = request.query_params.get('uid')
+        if not uid:
+            return Response({'error': 'Invalid UID'}, status=status.HTTP_400_BAD_REQUEST)
         try:
-            user = User.objects.get(pk=int(urlsafe_base64_decode(uid)))
-            check_token = EmailVerificationTokenGenerator().check_token(user, token)
-            if not check_token:
-                return Response({'error': 'Invalid email verification token'}, status=status.HTTP_400_BAD_REQUEST)
-            user.is_verified = True
-            user.save()
-            return Response({'message': 'Email verified successfully'}, status=status.HTTP_200_OK)
+            user_id = urlsafe_base64_decode(uid)
+            user = User.objects.get(pk=int(user_id))
         except User.DoesNotExist:
-            return Response({'error': 'Invalid verification token'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Invalid User'}, status=status.HTTP_404_NOT_FOUND)
+        check_token = EmailVerificationTokenGenerator().check_token(user, token)
+        if not check_token:
+            return Response({'error': 'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
+        user.is_verified = True
+        user.save()
+        return Response({'message': 'Email verified successfully'}, status=status.HTTP_200_OK)
+
     
     @action(detail=False, methods=['post'], url_path='forgot-password', permission_classes=[AllowAny])
     def forgot_password(self, request):
@@ -175,7 +173,10 @@ class AuthViewSet(viewsets.ViewSet):
             send_email(
                 user.email,
                 subject='Reset your password',
-                html=f'<h1>Please click the link below to reset your password:\n\n<a href=http://{os.getenv('API_DOMAIN')}/api/auth/reset-password?uid={uid}&token={token}>Click Here to reset your password</a>',
+                html=render_to_string('email/reset_password', {
+                    "token": token,
+                    "uid": uid
+                }),
             )
             return Response({'message': 'Password reset email sent'}, status=status.HTTP_200_OK)
         except User.DoesNotExist:
@@ -186,7 +187,12 @@ class AuthViewSet(viewsets.ViewSet):
         if request.method == 'GET':
             uid = request.query_params.get('uid')
             token = request.query_params.get('token')
-            user = User.objects.get(pk=int(urlsafe_base64_decode(uid)))
+            if not uid:
+                return Response({'error': 'Invalid UID'}, status=status.HTTP_400_BAD_REQUEST)
+            try:
+                user = User.objects.get(pk=int(urlsafe_base64_decode(uid)))
+            except User.DoesNotExist:
+                return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
             check_token = PasswordResetTokenGenerator().check_token(user, token)
             if not check_token:
                 return Response({'valid': False}, status=status.HTTP_400_BAD_REQUEST)
@@ -195,11 +201,13 @@ class AuthViewSet(viewsets.ViewSet):
             uid = request.data.get('uid')
             token = request.data.get('token')
             new_password = request.data.get('new_password')
+            if not uid:
+                return Response({'error': 'Invalid UID'}, status=status.HTTP_400_BAD_REQUEST)
             try:
                 user_id = int(urlsafe_base64_decode(uid))
                 user = User.objects.get(pk=user_id)
-            except:
-                return Response({'error': 'Invalid UID'}, status=status.HTTP_400_BAD_REQUEST)
+            except User.DoesNotExist:
+                return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
             check_token = PasswordResetTokenGenerator().check_token(user, token)
             if not check_token:
                 return Response({'error': 'Invalid Token'}, status=status.HTTP_400_BAD_REQUEST)

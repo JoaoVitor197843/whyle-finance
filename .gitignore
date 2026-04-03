@@ -236,3 +236,4 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+staticfiles/*

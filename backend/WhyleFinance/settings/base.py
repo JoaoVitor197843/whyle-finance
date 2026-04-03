@@ -139,6 +139,7 @@ CORS_ALLOWED_ORIGINS = [
 #CSRF Settings
 CSRF_TRUSTED_ORIGINS = [
     'https://app.whylefinance.dev',
+    'https://api.whylefinance.dev'
 ]
 CSRF_COOKIE_SECURE = True  # Set to True in production with HTTPS
 SESSION_COOKIE_SECURE = True  # Set to True in production with HTTPS
