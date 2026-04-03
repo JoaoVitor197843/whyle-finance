@@ -12,7 +12,7 @@ class TransactionsViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
     
-    @action(detail=False, methods=['get'])
+    @action(detail=False, methods=['get'], url_path='summary')
     def summary(self, request):
         transactions = Transaction.objects.filter(user=request.user)
 

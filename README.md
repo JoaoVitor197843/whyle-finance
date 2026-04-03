@@ -7,7 +7,7 @@ Whyle Finance - Financial management platform to track expenses, organize budget
 ## Project Status
 
 - Backend API (In progress)
-- Frontend (planned with React)
+- Frontend (in progress with React)
 - Authentication system
 
 ## Features

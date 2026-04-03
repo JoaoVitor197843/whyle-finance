@@ -22,7 +22,7 @@ export function SelectButtons({ id, title, links, openTab, setTab}: Props) {
         </button>
         <ul className={`${styles.list} ${openTab === id ? styles.listOpened : ""}`}>
             {links.map(link => (
-                <li  className={styles.items} key={link.url}>
+                <li  className={styles.items} key={link.title}>
                     <a className={styles.links} href={link.url}>{link.title.toUpperCase()}</a>
                 </li>
             ))}
