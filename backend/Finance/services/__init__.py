@@ -1,2 +1,3 @@
 from .send_verification_email import send_verification_email
 from .send_password_reset_email import send_password_reset_email
+from .register import register

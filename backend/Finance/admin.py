@@ -16,7 +16,7 @@ class TransactionAdmin(admin.ModelAdmin):
     list_display = ('user', 'Category', 'value', "transaction_type", 'created_at', 'updated_at')
     date_hierarchy = 'created_at'
     ordering = ('created_at',)
-    search_fields = ('user', 'Category__name', "transaction_type")
+    search_fields = ('user__username', 'user__email', 'user__first_name', 'category__name', "transaction_type")
     fieldsets = (
     ("User", {
         'fields': ('user',)
@@ -34,7 +34,8 @@ class UserAdmin(admin.ModelAdmin):
     list_display = ('username',"is_verified", "is_staff", "created_at", "updated_at")
     date_hierarchy = 'created_at'
     ordering = ('username',)
-    search_fields = ('username', "is_staff", "is_verified")
+    search_fields = ('username',)
+    list_filter = ("is_staff", "is_verified")
     fieldsets = (
     ("Informations", {
         "fields": ("username", "first_name", "last_name", "email", "password"),
