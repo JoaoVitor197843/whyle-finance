@@ -36,8 +36,8 @@ export default function Register() {
             email: email,
             password: password,
             username: username,
-            first_name: firstName,
-            last_name: lastName
+            ...(firstName && {first_name: firstName}),
+            ...(lastName && {last_name: lastName})
         });
         } catch (error: any) {
             setErrors(error.response.data)

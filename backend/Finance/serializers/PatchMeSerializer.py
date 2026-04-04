@@ -3,11 +3,11 @@ from django.contrib.auth.password_validation import validate_password
 
 class PatchMeSerializer(serializers.Serializer):
     password = serializers.CharField(write_only=True, required=True)
-    new_password = serializers.CharField(write_only=True, required=False)
-    username = serializers.CharField(required=False)
-    first_name = serializers.CharField(required=False)
-    last_name = serializers.CharField(required=False)
-    email = serializers.EmailField(required=False)
+    new_password = serializers.CharField(write_only=True, required=False, allow_blank=True)
+    username = serializers.CharField(required=False, allow_blank=True)
+    first_name = serializers.CharField(required=False, allow_blank=True)
+    last_name = serializers.CharField(required=False, allow_blank=True)
+    email = serializers.EmailField(required=False, allow_blank=True)
     created_at = serializers.DateTimeField(read_only=True)
     
     def validate(self, attrs):
