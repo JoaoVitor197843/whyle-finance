@@ -5,10 +5,10 @@ from .models import *
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('name', "created_at", "updated_at")
+    list_display = ('name',"transaction_type", "created_at", "updated_at")
     date_hierarchy = 'created_at'
     ordering = ('name',)
-    search_fields = ('name',)
+    search_fields = ('name', "transaction_type")
     list_display_links = ('name',)
 
 @admin.register(Transaction)
@@ -31,15 +31,16 @@ class TransactionAdmin(admin.ModelAdmin):
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('username', "is_staff", "is_active", "created_at", "updated_at")
+    list_display = ('username',"is_verified", "is_staff", "created_at", "updated_at")
     date_hierarchy = 'created_at'
     ordering = ('username',)
-    search_fields = ('username', "is_staff", "is_active")
+    search_fields = ('username', "is_staff", "is_verified")
     fieldsets = (
     ("Informations", {
         "fields": ("username", "first_name", "last_name", "email", "password"),
     }),
     ("Permissions", {
-        "fields": ("is_active", "is_staff", "is_superuser", "groups", "user_permissions")
+        "fields": ("is_verified", "is_staff", "is_superuser", "groups", "user_permissions")
     })
     )
+    readonly_fields = ('email', 'password')
