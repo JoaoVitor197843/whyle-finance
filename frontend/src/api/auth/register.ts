@@ -8,4 +8,5 @@ type RegisterData = {
     password: string;
 };
 
-export const register = (data: RegisterData) => api.post('/register/', data);
+
+export const register = (data: RegisterData) => api.post('/auth/register/', data);

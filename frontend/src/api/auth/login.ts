@@ -5,4 +5,4 @@ type LoginData = {
     password: string;
 };
 
-export const login = (data: LoginData) => api.post('/login/', data);
+export const login = (data: LoginData) => api.post('/auth/login/', data);
