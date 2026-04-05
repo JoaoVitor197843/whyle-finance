@@ -1,14 +1,8 @@
-.required {
-    color: red;
-}
-
 .main {
   flex: 1;
   display: flex;
   position: relative;
   flex-direction: column;
-  height: 50dvh;
-  width: 40dvh;
   gap: 20px;
   background-color: var(--border-color);
   border-radius: 50px;
@@ -58,7 +52,6 @@ body {
     background: 0;
     border: 0;
     color: rgb(142, 142, 255);
-    cursor: pointer;
     align-self: flex-end;
 }
 
@@ -68,53 +61,6 @@ body {
     border: 0;
     color: rgb(142, 142, 255);
     cursor: pointer;
-}
-
-.showPasswordButtons {
-    position: absolute;
-    background: none;
-    border: none;
-    cursor: pointer;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-40%);
-}
-.showPasswordInput {
-    width: 100%;
-    padding-right: 40px;
-}
-
-input {
-    width: 100%;
-    padding: 5px 0;
-    outline: none;
-    border: none;
-    border-bottom: 2px solid;
-    background: none;
-    font-size: 1rem;
-}
-
-input:focus {
-    border-bottom-color: var(--accent-color);
-}
-
-.error {
-    color: var(--error-color);
-    font-size: 12px;
-    align-self: flex-end;
-}
-.shake {
-    animation: shake 0.2s ease;
-}
-@keyframes shake {
-    0%, 100% { transform: translateX(0);}
-
-    20% { transform: translateX(2px);}
-
-    40% { transform: translateX(-2px);}
-
-    60% { transform: translateX(2px);}
-
-    80% { transform: translateX(-2px);}
-
+    box-sizing: content-box;
+    align-self: center;
 }
