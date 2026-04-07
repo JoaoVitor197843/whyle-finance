@@ -17,12 +17,15 @@ class PatchMeSerializer(serializers.Serializer):
         last_name = attrs.get('last_name')
 
         if last_name and not first_name:
-            raise ValidationError({'first_name': 'first name is required if a last name is provided'})
+            raise ValidationError({'success': False, 'errors': {'first_name': ['first name is required if a last name is provided']}})
         
         if new_password:
             if not self.instance.check_password(password):
-                raise ValidationError({'password': 'invalid password'})
-            validate_password(new_password)
+                raise ValidationError({'success': False, 'errors': {'password': ['invalid password']}})
+            try:
+                validate_password(new_password)
+            except DjangoValidationError as e:
+                raise ValidationError({'success': False, 'errors': {'password': e}})
         return attrs
         
     def update(self, instance, validated_data):

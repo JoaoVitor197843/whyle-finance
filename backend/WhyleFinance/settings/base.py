@@ -113,6 +113,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # DRF
 REST_FRAMEWORK = {
+    'EXCEPTION_HANDLER':
+    'Finance.exceptions.custom_exception_handler',
     'DEFAULT_RENDERER_CLASSES': ['rest_framework.renderers.JSONRenderer'],
      'DEFAULT_AUTHENTICATION_CLASSES': [
         'Finance.utils.auth.CookieJWTAuthentication',

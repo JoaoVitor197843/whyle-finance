@@ -14,13 +14,13 @@ class LoginSerializer(serializers.Serializer):
         user = authenticate(email=email, password=password)
 
         if not user:
-            raise AuthenticationFailed('Invalid email or password')
+            raise AuthenticationFailed({'success': False, "detail": 'Invalid email or password'})
         if not user.is_verified:
             if not user.verification_token_send_at or timezone.now() > user.verification_token_send_at + timedelta(hours=1):
                 send_verification_email(user)
-            raise AuthenticationFailed('Email not verified, please check your inbox for the verification email')
+            raise AuthenticationFailed({'success': False, "detail": 'Email not verified, please check your inbox for the verification email'})
         if not user.is_active:
-            raise AuthenticationFailed('User is not active anymore')
+            raise AuthenticationFailed({'success': False, "detail": 'User is not active anymore'})
         attrs['user'] = user
         return attrs
     

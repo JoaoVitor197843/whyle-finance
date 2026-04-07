@@ -29,11 +29,11 @@ class AuthViewSet(viewsets.ViewSet):
         serializer.is_valid(raise_exception=True)
         user = register(serializer.validated_data)
         send_verification_email(user)
-        return Response({"message": "Registration successful, please verify your email"}, status=status.HTTP_201_CREATED)
+        return Response({'success': True, "message": "Registration successful, please verify your email"}, status=status.HTTP_201_CREATED)
 
     @action(detail=False, methods=['post'], permission_classes=[IsAuthenticated])
     def logout(self, request):
-        response = Response({"message": "Logout successful"}, status=status.HTTP_200_OK)
+        response = Response({'success': True, "message": "Logout successful"}, status=status.HTTP_200_OK)
         delete_tokens(request, response)
         return response
     
@@ -41,20 +41,20 @@ class AuthViewSet(viewsets.ViewSet):
     def me(self, request):
         if request.method == 'GET':
             serializer = GetMeSerializer(request.user)
-            return Response(serializer.data)
+            return Response({'success': True, "message": None, "data": serializer.data}, status=status.HTTP_200_OK)
             
         elif request.method == 'PATCH':
             serializer = PatchMeSerializer(request.user, request.data, partial=True)
             serializer.is_valid(raise_exception=True)
             user = serializer.save()
             response = PatchMeSerializer(user)
-            return Response(response.data)
+            return Response({'success': True, "message": "User modified", "data": response.data})
             
         elif request.method == 'DELETE':
             serializer = DeleteMeSerializer(request.user, request.data)
             serializer.is_valid(raise_exception=True)
             request.user.delete()
-            response = Response({"message": "Account deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+            response = Response({'success': True, "message": "Account deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
             delete_tokens(request, response)
             return response
     
@@ -65,13 +65,13 @@ class AuthViewSet(viewsets.ViewSet):
         user = check_tokens(token, uid, 'email')
         user.is_verified = True
         user.save()
-        return Response({'message': 'Email verified successfully'}, status=status.HTTP_200_OK)
+        return Response({'success': True, 'message': 'Email verified successfully'}, status=status.HTTP_200_OK)
     
     @action(detail=False, methods=['post'], url_path='forgot-password', permission_classes=[AllowAny])
     def forgot_password(self, request):
         email = request.data.get('email')
         send_password_reset_email(email)
-        return Response({'message': 'Password reset email sent'}, status=status.HTTP_200_OK)
+        return Response({'success': True, 'message': 'Password reset email sent'}, status=status.HTTP_200_OK)
         
         
     @action(detail=False, methods=['get', 'post'], url_path='reset-password', permission_classes=[AllowAny])
@@ -83,12 +83,12 @@ class AuthViewSet(viewsets.ViewSet):
             new_password = serializer.validated_data['new_password']
             user.set_password(new_password)
             user.save()
-            return Response({'message': 'Password reset successful'}, status=status.HTTP_200_OK)
+            return Response({'success': True, 'message': 'Password reset successful'}, status=status.HTTP_200_OK)
         elif request.method == 'GET':
             uid = request.query_params.get('uid')
             token = request.query_params.get('token')
             check_tokens(token, uid, 'password')
-            return Response({'valid': True}, status=status.HTTP_202_ACCEPTED)
+            return Response({'success': True, 'message': 'the token is valid'}, status=status.HTTP_202_ACCEPTED)
         
         
     @action(detail=False, methods=['POST'], url_path='token-refresh', permission_classes=[AllowAny])

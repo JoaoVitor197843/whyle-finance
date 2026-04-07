@@ -9,5 +9,5 @@ class DeleteMeSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         if not self.instance.check_password(attrs.get('password')):
-            raise ValidationError({'password': 'Invalid password'})
+            raise ValidationError({'success': False, 'errors': {'password': ['Invalid password']}})
         return attrs

@@ -1,4 +1,4 @@
-import { api } from "../api_connect";
+import { api } from "../apiConnect";
 
 type LoginData = {
     email: string;

@@ -5,7 +5,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 def set_tokens(user):
     refresh = RefreshToken.for_user(user)
     access = refresh.access_token
-    response = Response({"message": "Login successful"}, status=status.HTTP_200_OK)
+    response = Response({'success': True, "message": "Login successful"}, status=status.HTTP_200_OK)
     response.set_cookie(
     key='access_token',
     value=str(access),

@@ -2,7 +2,8 @@ from . import *
 from django.db.models import Sum, Case, When, F
 from django.utils import timezone
 from rest_framework.permissions import IsAuthenticated
-class TransactionsViewSet(viewsets.ModelViewSet):
+from .base_model_view_set import BaseModelViewSet
+class TransactionsViewSet(BaseModelViewSet):
     serializer_class = TransactionSerializer
     permission_classes = [IsAuthenticated]
     
@@ -31,10 +32,11 @@ class TransactionsViewSet(viewsets.ModelViewSet):
 
         categories = transactions.values('category', 'transaction_type').annotate(total_spent=Sum('value'))
 
-        return Response({
+        return Response({'success': True, 'message': "Transactions summary",
+            "data": {
             'balance': balance,
             'expenses': expenses,
             'income': incomes,
             'by_category': categories,
-            'requested_at': timezone.now()
+            'requested_at': timezone.now()}
         })

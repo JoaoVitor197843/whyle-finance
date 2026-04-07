@@ -11,7 +11,10 @@ class ResetPasswordSerializer(serializers.Serializer):
         uid = attrs.get('uid')
         token = attrs.get('token')
         new_password = attrs.get('new_password')
-        validate_password(new_password)
+        try:
+            validate_password(new_password)
+        except DjangoValidationError as e:
+            raise ValidationError({'success': False, 'errors': {'password': e}})
         user = check_tokens(token, uid, 'password')
         attrs['user'] = user
         return attrs
