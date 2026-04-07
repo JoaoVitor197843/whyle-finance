@@ -71,22 +71,26 @@ export default function Register() {
                     name='first_name'
                     control={control}
                     defaultValue=''
-                    render={({ field }) => (
+                    render={({ field, fieldState }) => (
                         <TextField 
                         {...field}
                         label='First Name'
                         variant='standard'
+                        error={!!fieldState.error}
+                        helperText={fieldState.error?.message || " "}
                         fullWidth/>
                     )}/>
                     <Controller 
                     name='last_name'
                     control={control}
                     defaultValue=''
-                    render={({ field }) => (
+                    render={({ field, fieldState }) => (
                         <TextField 
                         {...field}
                         label='Last Name'
                         variant='standard'
+                        error={!!fieldState.error}
+                        helperText={fieldState.error?.message || " "}
                         fullWidth/>
                     )}/>
                     </Box>
