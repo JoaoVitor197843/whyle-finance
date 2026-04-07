@@ -15,11 +15,11 @@ class RegisterSerializer(serializers.Serializer):
         last_name = attrs.get('last_name')
 
         if User.objects.filter(email=email).exists():
-            raise ValidationError({'success': False, 'errors': {'email': ['Email already in use']}})
+            raise ValidationError({'email': ['Email already in use']})
         if last_name and not first_name:
-            raise ValidationError({'success': False, 'errors': {'first_name': ['first name is required if a last name is provided']}})
+            raise ValidationError({'first_name': ['first name is required if a last name is provided']})
         try:
             validate_password(password)
         except DjangoValidationError as e:
-            raise ValidationError({'success': False, 'errors': {'password': list(e)}})
+            raise ValidationError({'password': list(e)})
         return attrs

@@ -6,16 +6,16 @@ from django.utils.http import urlsafe_base64_decode
 
 def check_tokens(token, uid, token_type):
     if not uid:
-        raise ValidationError({'success': False, 'errors': {'uid': ['Invalid UID']}})
+        raise ValidationError({'uid': ['Invalid UID']})
     try:
         user_id = urlsafe_base64_decode(uid)
         user = User.objects.get(pk=int(user_id))
     except User.DoesNotExist:
-        raise NotFound({'success': False, 'errors': {'user': ['Invalid User']}})
+        raise NotFound({'user': ['Invalid User']})
     if token_type == 'email':
         check_token = EmailVerificationTokenGenerator().check_token(user, token)
     elif token_type == 'password':
         check_token = PasswordResetTokenGenerator().check_token(user, token)
     if not check_token:
-        raise ValidationError({'success': False, 'errors': {'token': ['Invalid token']}})
+        raise ValidationError({'token': ['Invalid token']})
     return user

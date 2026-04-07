@@ -16,7 +16,7 @@ class TransactionSerializer(serializers.ModelSerializer):
 
         if not category and not transaction_type:
             raise ValidationError(
-            {'success': False, 'detail': 'Please, specify a category or type of transaction'}
+            {'detail': 'Please, specify a category or type of transaction'}
             )
         
         elif category and not transaction_type:
@@ -24,7 +24,7 @@ class TransactionSerializer(serializers.ModelSerializer):
 
         elif (category and transaction_type) and category.transaction_type != transaction_type:
             raise ValidationError(
-                {'success': False, 'detail': 'The type of transaction must be the same as the category'}
+                {'detail': 'The type of transaction must be the same as the category'}
             )
         
         return data
