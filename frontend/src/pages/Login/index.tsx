@@ -59,7 +59,7 @@ export default function Login() {
                     <TextField 
                     {...field}
                     label='Password' 
-                    type="password"
+                    type={showPassword? "text": "password"}
                     error={!!fieldState.error}
                     helperText={fieldState.error?.message || " "}
                     variant="standard"
