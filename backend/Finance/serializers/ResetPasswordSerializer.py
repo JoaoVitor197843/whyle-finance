@@ -14,7 +14,7 @@ class ResetPasswordSerializer(serializers.Serializer):
         try:
             validate_password(new_password)
         except DjangoValidationError as e:
-            raise ValidationError({'success': False, 'errors': {'password': e}})
+            raise ValidationError({'success': False, 'errors': {'password': list(e)}})
         user = check_tokens(token, uid, 'password')
         attrs['user'] = user
         return attrs

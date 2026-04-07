@@ -2,6 +2,7 @@ from . import *
 from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
+    username = models.CharField(max_length=150, unique=False)
     email = models.EmailField(unique=True)
     is_verified = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)

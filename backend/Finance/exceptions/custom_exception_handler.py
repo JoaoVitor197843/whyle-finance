@@ -15,7 +15,7 @@ def custom_exception_handler(exc, context):
     if 'detail' in data and len(data) == 1:
         custom_response['detail'] = data['detail']
     else:
-        custom_response = data
+        custom_response['errors'] = data
     
     response.data = custom_response
     return response

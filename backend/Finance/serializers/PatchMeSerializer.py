@@ -25,7 +25,7 @@ class PatchMeSerializer(serializers.Serializer):
             try:
                 validate_password(new_password)
             except DjangoValidationError as e:
-                raise ValidationError({'success': False, 'errors': {'password': e}})
+                raise ValidationError({'success': False, 'errors': {'password': list(e)}})
         return attrs
         
     def update(self, instance, validated_data):
