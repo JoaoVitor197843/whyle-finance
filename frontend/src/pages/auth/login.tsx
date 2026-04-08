@@ -1,7 +1,7 @@
 import { TextField, Button, Box, Typography, Card, CardContent, Link, InputAdornment, IconButton, Snackbar, Alert } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useForm, Controller } from "react-hook-form";
-import { Link as RouterLink} from "react-router-dom";
+import { Link as RouterLink, useNavigate} from "react-router-dom";
 import { useState } from "react";
 import { login } from "../../api/auth/login";
 import { handleApiFormErrors } from "../../api/handleApiErrors";
@@ -15,9 +15,11 @@ export default function Login() {
     const [showPassword, setShowPassword] = useState(false);
     const {control, handleSubmit, setError, } = useForm<FormData>();
     const [apiError, setApiError] = useState<string>("");
+    const navigate = useNavigate();
     const onSubmit = async (data: FormData) => {
         try {
             await login(data);
+            navigate('/')
         } catch (err: any) {
             handleApiFormErrors(err.response.data, setError, setApiError)
         }
