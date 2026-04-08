@@ -35,7 +35,7 @@ export function VerifyEmail() {
             
             setStatus("success")
             } catch(err: any) {
-                handleApiErrors(err, setError)
+                handleApiErrors(err.response.data, setError)
                 setStatus('error')
             }
         }
@@ -51,12 +51,12 @@ export function VerifyEmail() {
                     <DialogContentText>Your email has been verified! You will be redirected in {count} seconds.</DialogContentText>
                 </DialogContent>
             </Dialog>
-            {Object.entries(error).map(([_ , message]) =>
-            <Snackbar open={status === 'error'} key={_} anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}>
+            
+            <Snackbar open={status === 'error'} anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}>
                 <Alert severity="error">
-                    {message}
+                    {Object.entries(error).map(([_ , message]) => message)}
                 </Alert>
-            </Snackbar>)}
+            </Snackbar>
         </> 
     )
 }

@@ -237,3 +237,4 @@ dist-ssr
 *.sln
 *.sw?
 staticfiles/*
+.env.development

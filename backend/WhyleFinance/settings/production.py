@@ -51,3 +51,19 @@ LOGGING = {
         },
     },
 }
+
+#CORS Settings
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = [
+    'https://app.whylefinance.dev',
+]
+
+#CSRF Settings
+CSRF_TRUSTED_ORIGINS = [
+    'https://app.whylefinance.dev',
+    'https://api.whylefinance.dev'
+]
+CSRF_COOKIE_SECURE = True  # Set to True in production with HTTPS
+CSRF_COOKIE_SAMESITE = 'None'
+SESSION_COOKIE_SAMESITE = "None"
+SESSION_COOKIE_SECURE = True  # Set to True in production with HTTPS

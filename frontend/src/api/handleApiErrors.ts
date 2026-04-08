@@ -34,7 +34,7 @@ export function handleApiErrors(errorData: ErrorData, setErrors: React.Dispatch<
         })
         };
     if(errorData.detail) {
-    setErrors(prev => ({...prev, detail: errorData.detail}));
+        setErrors(prev => ({...prev, detail: errorData.detail}));
     };
 
     return errorData;
