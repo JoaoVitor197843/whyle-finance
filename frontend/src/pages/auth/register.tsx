@@ -6,7 +6,7 @@ import { useForm, Controller } from "react-hook-form";
 import { useState } from 'react';
 import { VisibilityOff, Visibility } from '@mui/icons-material';
 import { register } from '../../api/auth/register';
-import { handleApiErrors } from '../../api/handleApiErrors';
+import { handleApiFormErrors } from '../../api/handleApiErrors';
 
 type FormData = {
     email: string;
@@ -31,7 +31,7 @@ export default function Register() {
             await register(data);
             setIsOpen(true)
         } catch (err: any) {
-            handleApiErrors(err.response.data, setError, setApiError)
+            handleApiFormErrors(err.response.data, setError, setApiError)
         }
     }
     return (

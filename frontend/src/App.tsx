@@ -1,8 +1,9 @@
 
 import { Route, Routes } from 'react-router-dom';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import { Home } from './pages/Home';
+import Login from './pages/auth/login';
+import Register from './pages/auth/register';
+import { Home } from './pages/home';
+import { VerifyEmail } from './pages/auth/verifyEmail';
 
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
       <Route path='/login' element={<Login />} />
       <Route path='/register' element={<Register />} />
       <Route path='/' element={<Home />}/>
+      <Route path='/verify-email' element={<VerifyEmail />}/>
     </Routes>
   </>
   );

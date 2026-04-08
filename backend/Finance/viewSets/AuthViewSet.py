@@ -58,10 +58,10 @@ class AuthViewSet(viewsets.ViewSet):
             delete_tokens(request, response)
             return response
     
-    @action(detail=False, methods=['get'], url_path='verify-email', permission_classes=[AllowAny])
+    @action(detail=False, methods=['post'], url_path='verify-email', permission_classes=[AllowAny])
     def verify_email(self, request):
-        token = request.query_params.get('token')
-        uid = request.query_params.get('uid')
+        token = request.data.get('token')
+        uid = request.data.get('uid')
         user = check_tokens(token, uid, 'email')
         user.is_verified = True
         user.save()

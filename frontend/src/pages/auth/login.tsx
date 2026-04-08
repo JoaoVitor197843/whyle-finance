@@ -4,7 +4,7 @@ import { useForm, Controller } from "react-hook-form";
 import { Link as RouterLink} from "react-router-dom";
 import { useState } from "react";
 import { login } from "../../api/auth/login";
-import { handleApiErrors } from "../../api/handleApiErrors";
+import { handleApiFormErrors } from "../../api/handleApiErrors";
 
 type FormData = {
     email: string;
@@ -19,7 +19,7 @@ export default function Login() {
         try {
             await login(data);
         } catch (err: any) {
-            handleApiErrors(err.response.data, setError, setApiError)
+            handleApiFormErrors(err.response.data, setError, setApiError)
         }
     }
 
