@@ -5,4 +5,4 @@ type verifyEmailData = {
     uid: string | null;
 }
 
-export const verifyEmail = (data: verifyEmailData) =>  api.post('/auth/verify-email', data)
+export const verifyEmail = (data: verifyEmailData) =>  api.post('/auth/verify-email/', data)
