@@ -77,7 +77,6 @@ export default function Login() {
                                 )
                             }
                         }}/>)}/>
-                    <Typography color='error'>{apiError ? apiError : " "}</Typography>
                     <Button variant="contained" type="submit" fullWidth sx={{
                         mt: 2,
                         py: 1.5,
