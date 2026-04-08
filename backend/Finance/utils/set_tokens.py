@@ -11,13 +11,13 @@ def set_tokens(user):
     value=str(access),
     httponly=True,
     secure=True,  # Set to True in production with HTTPS
-    samesite='Strict'  # Adjust as needed (None, Lax, Strict)
+    samesite='None'  # Adjust as needed (None, Lax, Strict)
     )
     response.set_cookie(
     key='refresh_token',
     value=str(refresh),
     httponly=True,
     secure=True,  # Set to True in production with HTTPS
-    samesite='Strict'  # Adjust as needed (None, Lax, Strict)
+    samesite='None'  # Adjust as needed (None, Lax, Strict)
     )
     return response

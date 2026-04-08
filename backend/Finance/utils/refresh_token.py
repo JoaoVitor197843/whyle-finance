@@ -19,6 +19,6 @@ def refresh_token(request):
         value=access,
         httponly=True,
         secure=True,  # Set to True in production with HTTPS
-        samesite='Strict'  # Adjust as needed (None, Lax, Strict)
+        samesite='None'  # Adjust as needed (None, Lax, Strict)
     )
     return response
