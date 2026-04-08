@@ -1,10 +1,10 @@
-import { TextField, Button, Box, Typography, Card, CardContent, Link, InputAdornment, IconButton } from "@mui/material";
+import { TextField, Button, Box, Typography, Card, CardContent, Link, InputAdornment, IconButton, Snackbar, Alert } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useForm, Controller } from "react-hook-form";
 import { Link as RouterLink} from "react-router-dom";
 import { useState } from "react";
 import { login } from "../../api/auth/login";
-import { handleApiErrors } from "../../api/handleApi";
+import { handleApiErrors } from "../../api/handleApiErrors";
 
 type FormData = {
     email: string;
@@ -16,7 +16,6 @@ export default function Login() {
     const {control, handleSubmit, setError, } = useForm<FormData>();
     const [apiError, setApiError] = useState<string>("");
     const onSubmit = async (data: FormData) => {
-        setApiError("")
         try {
             await login(data);
         } catch (err: any) {
@@ -25,12 +24,13 @@ export default function Login() {
     }
 
     return (
-        <Card sx={{borderRadius: 4, p: 3, width: {xs: '90vw', sm: 'auto'}, maxHeight: '90vh', overflowY: 'auto'}}>
+        <>
+        <Card sx={{borderRadius: 4, p: 3, width: {xs: '90vw', sm: 'auto'}, maxHeight: '90vh', maxWidth: '320px', overflowY: 'auto'}}>
         <CardContent>
             <Box mb={{xs: 2,sm: 5}}>
                 <Typography variant="h4" sx={{fontSize: {xs: "1.8rem", sm: "2.5rem"}}}>Sign In</Typography>
             </Box>
-            <Box display="flex" component="form" flexDirection='column' gap={2.5} onSubmit={handleSubmit(onSubmit)} noValidate>
+            <Box display="flex" component="form" flexDirection='column' gap={1} onSubmit={handleSubmit(onSubmit)} noValidate>
                 
                 <Controller 
                 name="email"
@@ -44,9 +44,9 @@ export default function Login() {
                     type="email"
                     error={!!fieldState.error}
                     helperText={fieldState.error?.message || " "}
-                    variant="standard"
+                    variant="outlined"
                     required
-                    
+                    autoComplete="email"
                     fullWidth/>
                 )}
                 />
@@ -62,8 +62,9 @@ export default function Login() {
                     type={showPassword? "text": "password"}
                     error={!!fieldState.error}
                     helperText={fieldState.error?.message || " "}
-                    variant="standard"
+                    variant="outlined"
                     required
+                    autoComplete="current-password"
                     fullWidth
                     slotProps={{
                             input: {
@@ -92,5 +93,15 @@ export default function Login() {
             </Box>
        </CardContent>
        </Card>
+        <Snackbar
+        open={!!apiError}
+        autoHideDuration={4000}
+        onClose={() => setApiError('')}
+        anchorOrigin={{vertical: 'bottom', horizontal: "right"}}>
+            <Alert severity='error' onClose={() => setApiError('')}>
+                {apiError}
+            </Alert>
+        </Snackbar>
+    </>
     )
 }
