@@ -1,5 +1,16 @@
-import { TextField, Button, Box, Typography, Card, CardContent, Link, InputAdornment, IconButton, Snackbar, Alert } from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Link from "@mui/material/Link";
+import InputAdornment from "@mui/material/InputAdornment";
+import IconButton from "@mui/material/IconButton";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useForm, Controller } from "react-hook-form";
 import { Link as RouterLink, useNavigate} from "react-router-dom";
 import { useState } from "react";
@@ -11,7 +22,7 @@ type FormData = {
     password: string;
 }
 
-export default function Login() {
+export const  Login = () => {
     const [showPassword, setShowPassword] = useState(false);
     const {control, handleSubmit, setError, } = useForm<FormData>();
     const [apiError, setApiError] = useState<string>("");

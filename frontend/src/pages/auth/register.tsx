@@ -1,10 +1,24 @@
 import { useNavigate, Link as RouterLink} from 'react-router-dom';
-import { TextField, Button, Box, Typography, Card, CardContent, Link, InputAdornment, IconButton } from "@mui/material";
-import { DialogActions, Dialog, DialogContent, DialogTitle, DialogContentText } from '@mui/material';
-import { Snackbar, Alert } from '@mui/material';
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Link from "@mui/material/Link";
+import InputAdornment from "@mui/material/InputAdornment";
+import IconButton from "@mui/material/IconButton";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogActions from '@mui/material/DialogContentText';
 import { useForm, Controller } from "react-hook-form";
 import { useState } from 'react';
-import { VisibilityOff, Visibility } from '@mui/icons-material';
 import { register } from '../../api/auth/register';
 import { handleApiFormErrors } from '../../api/handleApiErrors';
 
@@ -17,7 +31,7 @@ type FormData = {
     confirm_password: string;
 }
 
-export default function Register() {
+export const Register = () =>  {
     const { control, handleSubmit, watch, setError} = useForm<FormData>();
     const [ showPassword, setShowPassword ] = useState({
         password: false,

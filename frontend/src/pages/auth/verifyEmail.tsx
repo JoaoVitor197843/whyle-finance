@@ -1,11 +1,17 @@
 import { useEffect, useState } from "react"
 import { useNavigate, useSearchParams } from "react-router-dom"
 import { verifyEmail } from "../../api/auth/verifyEmail";
-import { CircularProgress, Dialog, DialogTitle, DialogContent, DialogContentText, Snackbar, Alert } from "@mui/material";
+import Alert from "@mui/material/Alert";
+import Snackbar from "@mui/material/Snackbar";
+import DialogContentText from "@mui/material/DialogContentText"
+import DialogContent from "@mui/material/DialogContent"
+import DialogTitle from "@mui/material/DialogTitle";
+import Dialog from "@mui/material/Dialog";
+import CircularProgress from "@mui/material/CircularProgress";
 import { handleApiErrors } from "../../api/handleApiErrors";
 
 
-export function VerifyEmail() {
+export const VerifyEmail = () => {
     const [params] = useSearchParams();
     const navigate = useNavigate();
     const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');

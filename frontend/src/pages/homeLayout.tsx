@@ -1,8 +1,17 @@
-import { AppBar, Toolbar,IconButton, Box, Menu, MenuItem, useMediaQuery, Drawer, useTheme } from "@mui/material";
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import IconButton from "@mui/material/IconButton";
+import Box from "@mui/material/Box";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import Drawer from "@mui/material/Drawer";
+import { useTheme } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
-import { AccountCircle, Menu as MenuIcon } from "@mui/icons-material";
+import MenuIcon from "@mui/icons-material/Menu";
+import AccountCircle from "@mui/icons-material/AccountCircle"
 import { useState } from "react";
-export function Home() {
+export const HomeLayout = () => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
     const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget)
@@ -31,7 +40,6 @@ export function Home() {
                     <MenuIcon />
                 </IconButton>
                 <Box sx={{flexGrow: 1}} />
-                
                     <IconButton onClick={handleOpen} size="large">
                         <AccountCircle />
                     </IconButton>
