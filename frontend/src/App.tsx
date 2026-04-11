@@ -2,9 +2,10 @@
 import { Route, Routes } from 'react-router-dom';
 import { Login } from './pages/auth/login';
 import { Register } from './pages/auth/register';
-import { HomeLayout } from './pages/homeLayout';
+import { HomeLayout } from './pages/home/homeLayout';
 import { VerifyEmail } from './pages/auth/verifyEmail';
 import LandingPage from './pages/landingPage/landingPage';
+import ProtectedRoute from './components/ProtectedRoute';
 
 const App = () => {
   return (
@@ -12,10 +13,14 @@ const App = () => {
 
     <Routes>
       <Route path='/' element={<LandingPage />}/>
-      <Route path='/login' element={<Login />} />
-      <Route path='/register' element={<Register />} />
-      <Route path='/home' element={<HomeLayout />}/>
-      <Route path='/verify-email' element={<VerifyEmail />}/>
+      <Route element={<ProtectedRoute type={false}/>}>
+        <Route path='/login' element={<Login />} />
+        <Route path='/register' element={<Register />} />
+      </Route>
+      <Route element={<ProtectedRoute type/>}>
+        <Route path='/home' element={<HomeLayout />}/>
+        <Route path='/verify-email' element={<VerifyEmail />}/>
+      </Route>
     </Routes>
   </>
   );
