@@ -49,7 +49,7 @@ export const Register = () =>  {
         }
     }
     return (
-    <>
+    <Box sx={{justifyContent: 'center', alignItems: 'center', height: "100vh", display: "flex"}}>
         <Card sx={{borderRadius: 4, p: 2, width: {xs: '90vw', sm: 'auto'}, maxHeight: '90vh', maxWidth: '400px', overflowY: 'auto'}}>
             <CardContent>
                 <Box mb={2}>
@@ -214,6 +214,6 @@ export const Register = () =>  {
                 {apiError}
             </Alert>
         </Snackbar>
-    </>
+    </Box>
     )
 }

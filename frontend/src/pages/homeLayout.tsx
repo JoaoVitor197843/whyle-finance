@@ -7,7 +7,7 @@ import MenuItem from "@mui/material/MenuItem";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Drawer from "@mui/material/Drawer";
 import { useTheme } from "@mui/material/styles";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Outlet } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircle from "@mui/icons-material/AccountCircle"
 import { useState } from "react";
@@ -53,6 +53,7 @@ export const HomeLayout = () => {
                     </Menu>
             </Toolbar>
         </AppBar>
+        <Outlet />
         </>
     )
 }

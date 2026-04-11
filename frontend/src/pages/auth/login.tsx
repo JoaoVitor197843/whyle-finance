@@ -37,7 +37,7 @@ export const  Login = () => {
     }
 
     return (
-        <>
+        <Box sx={{justifyContent: 'center', alignItems: 'center', height: "100vh", display: "flex"}}>
         <Card sx={{borderRadius: 4, p: 3, width: {xs: '90vw', sm: 'auto'}, maxHeight: '90vh', maxWidth: '320px', overflowY: 'auto'}}>
         <CardContent>
             <Box mb={{xs: 2,sm: 5}}>
@@ -114,6 +114,6 @@ export const  Login = () => {
                 {apiError}
             </Alert>
         </Snackbar>
-    </>
+    </Box>
     )
 }
