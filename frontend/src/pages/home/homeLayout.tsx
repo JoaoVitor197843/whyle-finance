@@ -34,7 +34,7 @@ export const HomeLayout = () => {
         }}>
             
         </Drawer>
-        <AppBar position="fixed" sx={{ml: {sm: drawerWidth}, width: {sm: `calc(100% - ${drawerWidth})`}}}>
+        <AppBar position="fixed" sx={{ml: drawerWidth, width: {sm: `calc(100% - ${drawerWidth})`}}}>
             <Toolbar sx={{ minHeight: '48px !important'}}> 
                 <IconButton sx={{display: {sm: 'none'}}} onClick={() => setOpenMobile(true)}>
                     <MenuIcon />
@@ -54,7 +54,7 @@ export const HomeLayout = () => {
             </Toolbar >
         </AppBar>
         <Box sx={{height: '48px'}}/>
-        <Box sx={{ml: {sm: drawerWidth}, width: {sm: `calc(100% - ${drawerWidth})`}, height: 'calc(100vh - 48px)'}}>
+        <Box sx={{ml: {sm: drawerWidth}, width: {sm: `calc(100% - ${drawerWidth})`}, height: 'calc(100vh - 48px)', justifyContent: "center", alignItems: "center", display: "flex"}}>
             <Outlet />
         </Box>
         </>

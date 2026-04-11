@@ -30,7 +30,7 @@ class TransactionsViewSet(BaseModelViewSet):
         
         incomes = transactions.filter(transaction_type='income').aggregate(total_spent=Sum('value'))['total_spent']
 
-        categories = transactions.values('category', 'transaction_type').annotate(total_spent=Sum('value'))
+        categories = transactions.values('category__name', 'transaction_type').annotate(total_spent=Sum('value'))
 
         return Response({'success': True, 'message': "Transactions summary",
             "data": {

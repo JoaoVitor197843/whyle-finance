@@ -6,6 +6,7 @@ import { HomeLayout } from './pages/home/homeLayout';
 import { VerifyEmail } from './pages/auth/verifyEmail';
 import LandingPage from './pages/landingPage/landingPage';
 import ProtectedRoute from './components/ProtectedRoute';
+import HomeInit from './pages/home/homeInit';
 
 const App = () => {
   return (
@@ -18,7 +19,10 @@ const App = () => {
         <Route path='/register' element={<Register />} />
       </Route>
       <Route element={<ProtectedRoute type/>}>
-        <Route path='/home' element={<HomeLayout />}/>
+        <Route path='/home' element={<HomeLayout />}>
+          <Route index element={<HomeInit />}/>
+          <Route path='init' element={<HomeInit />}/>
+        </Route>
         <Route path='/verify-email' element={<VerifyEmail />}/>
       </Route>
     </Routes>
