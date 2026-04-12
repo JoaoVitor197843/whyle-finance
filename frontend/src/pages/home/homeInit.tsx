@@ -126,12 +126,28 @@ const HomeInit = () => {
             </Stack>
             {byDay && byDay.data.balance_by_period.length > 1 && (
             <LineChart
-            sx={{mt: 10}}
+            sx={{mt: 5}}
             height={220}
             series={[
                 {
+                    label: 'Balance',
                     data: byDay?.data.balance_by_period.map((item) => item.balance) ?? [],
                     curve: 'monotoneX',
+                    showMark: false,
+                },
+                {
+                    label: 'Income',
+                    data: byDay?.data.incomes_by_period.map((item) => item.total) ?? [],
+                    curve: 'monotoneX',
+                    color: '#22c55e',
+                    showMark: false,
+                },
+                {
+                    label: 'Expenses',
+                    data: byDay?.data.expenses_by_period.map((item) => item.total) ?? [],
+                    curve: 'monotoneX',
+                    color: '#ef4444',
+                    showMark: false,
                 },
             ]}
             xAxis={[
@@ -146,7 +162,7 @@ const HomeInit = () => {
                 },
             ]}/>)}
             {byDay && byDay.data.balance_by_period.length <= 1 && (
-                <Typography variant="h4"textAlign= 'center' mt={20}>Not enough data to display chart</Typography>
+                <Typography variant="h4"textAlign= 'center' mt={5}>Not enough data to display chart</Typography>
             )}
             </Box>
         </Box>
