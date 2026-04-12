@@ -9,7 +9,12 @@ import Drawer from "@mui/material/Drawer";
 import { useTheme } from "@mui/material/styles";
 import { useNavigate, Outlet } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
-import AccountCircle from "@mui/icons-material/AccountCircle"
+import AccountCircle from "@mui/icons-material/AccountCircle";
+import List from "@mui/material/List";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import Home from "@mui/icons-material/Home";
 import { useState } from "react";
 export const HomeLayout = () => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
@@ -32,7 +37,14 @@ export const HomeLayout = () => {
             width: drawerWidth,
             '& .MuiDrawer-paper': {width: drawerWidth}
         }}>
-            
+            <List>
+                <ListItemButton onClick={() => navigate('/home')}>
+                    <ListItemIcon>
+                        <Home />
+                    </ListItemIcon>
+                    <ListItemText primary='Home'/>
+                </ListItemButton>
+            </List>
         </Drawer>
         <AppBar position="fixed" sx={{ml: drawerWidth, width: {sm: `calc(100% - ${drawerWidth})`}}}>
             <Toolbar sx={{ minHeight: '48px !important'}}> 

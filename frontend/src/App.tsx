@@ -21,7 +21,6 @@ const App = () => {
       <Route element={<ProtectedRoute type/>}>
         <Route path='/home' element={<HomeLayout />}>
           <Route index element={<HomeInit />}/>
-          <Route path='init' element={<HomeInit />}/>
         </Route>
         <Route path='/verify-email' element={<VerifyEmail />}/>
       </Route>
