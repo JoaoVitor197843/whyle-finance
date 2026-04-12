@@ -9,6 +9,7 @@ import Drawer from "@mui/material/Drawer";
 import { useTheme } from "@mui/material/styles";
 import { useNavigate, Outlet } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
+import LogoutIcon from '@mui/icons-material/Logout'
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
@@ -57,10 +58,8 @@ export const HomeLayout = () => {
                     </IconButton>
                     <Menu anchorEl={anchorEl} open={!!anchorEl} onClose={handleClose}>
                         <MenuItem onClick={() => navigate('/logout')}>
+                            <LogoutIcon sx={{mr: 1}} fontSize="small"/>
                             Logout
-                        </MenuItem>
-                        <MenuItem onClick={() => navigate('/register')}>
-                            Register
                         </MenuItem>
                     </Menu>
             </Toolbar >
