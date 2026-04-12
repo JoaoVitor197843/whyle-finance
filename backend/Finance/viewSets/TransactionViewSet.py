@@ -54,17 +54,17 @@ class TransactionsViewSet(BaseModelViewSet):
         if serializer.data['period']:
             transactions = transactions.filter(created_at__gte=serializer.data['period'])
         expenses_by_period = transactions.annotate(
-            day=TruncDay('created_at', output_field=DateField())).values('day').filter(
+            day=TruncDay('created_at')).values('day').filter(
                     transaction_type='expense').annotate(
                         total=Sum('value')).order_by('day')
         
         incomes_by_period = transactions.annotate(
-            day=TruncDay('created_at', output_field=DateField())).values('day').filter(
+            day=TruncDay('created_at')).values('day').filter(
                 transaction_type='income').annotate(
                     total=Sum('value')).order_by('day')
         
         balance_by_period = transactions.annotate(
-            day=TruncDay('created_at', output_field=DateField())).values('day').annotate(
+            day=TruncDay('created_at')).values('day').annotate(
             balance=Sum(
                 Case(
                     When(transaction_type='income', then=F('value')),

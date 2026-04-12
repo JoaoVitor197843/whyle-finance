@@ -8,6 +8,8 @@ import Button from '@mui/material/Button'
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import { LineChart } from '@mui/x-charts/LineChart'
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { useTheme } from "@mui/material/styles";
 interface Category {
   total_spent: number
   category__name: string
@@ -48,6 +50,8 @@ const HomeInit = () => {
     const [summary, setSummary] = useState<Summary | null>(null)
     const [period, setPeriod] = useState<string>('all')
     const [byDay, setByDay] = useState<ByDayResponse | null>(null)
+    const theme = useTheme()
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
     const periods = ['1w', '1m', '6m', '12m', 'all']
     useEffect (() => {
         const getData = async () => {
@@ -67,32 +71,32 @@ const HomeInit = () => {
     if (!summary) return null
 
     return (
-        <Box sx={{width: "100%", height: "100%", p: 10}}>
+        <Box sx={{width: "100%", height: "100%", p: {sm: 10, xs: 5}}}>
             <Stack direction="row" spacing={2} mb={10} justifyContent='center' display='flex'>
                 <MetricCard label="Balance" value={summary.data.balance}/>
                 <MetricCard label="Income" value={summary.data.income}/>
                 <MetricCard label="Expenses" value={summary.data.expenses}/>
             </Stack>
             <Grid container spacing={10} sx={{justifyContent: 'center'}}>
-                <Grid alignItems='center' justifyContent='center' direction='column'>
+                <Grid>
                 <Typography variant="h5" sx={{textAlign: 'center', mb: 5}}>Categories by expenses</Typography>
-                <PieChart series={[
+
+                {summary.data.by_category.filter((category) => category.transaction_type === 'expense').length > 1 ? (<PieChart series={[
                     {
                         data: summary.data.by_category.filter((category) => category.transaction_type === 'expense').map((category, index) => ({
                             id: index,
                             value: category.total_spent,
-                            label: category.category__name
+                            label: category.category__name ?? 'Uncategorized'
                         }))
                     }
                 ]}
-                sx={{
-                    width: {sm: 300, xs: 200},
-                    height: {sm: 200, xs: 100}
-                }}></PieChart>
+                width={isMobile ? 200 : 300}
+                height={isMobile ? 100  :200}></PieChart>) : (<Typography variant="h5"textAlign= 'center'>Not enough data to display yet</Typography>)} 
                 </Grid>
-                <Grid alignItems='center' justifyContent='center' direction='column'>
+                <Grid >
                 <Typography variant="h5" sx={{textAlign: 'center', mb: 5}}>Category by incomes</Typography>
-                <PieChart series={[
+
+                {summary.data.by_category.filter((category) => category.transaction_type === 'income').length > 1 ? (<PieChart series={[
                     {
                         data: summary.data.by_category.filter((category) => category.transaction_type === 'income').map((category, index) => ({
                             id: index,
@@ -104,7 +108,7 @@ const HomeInit = () => {
                 sx={{
                     width: {sm: 300, xs: 200},
                     height: {sm: 200, xs: 100}
-                }}></PieChart>
+                }}></PieChart>) : (<Typography variant="h5"textAlign='center'>Not enough data to display yet</Typography>)}
                 </Grid>
             </Grid>
             <Box mt={5}>
@@ -126,7 +130,7 @@ const HomeInit = () => {
                     }}>{p.toUpperCase()}</Button>
                 ))}
             </Stack>
-            {byDay && byDay.data.balance_by_period.length > 1 && (
+            {byDay && byDay.data.balance_by_period.length > 1 ? (
             <LineChart
             sx={{mt: 5}}
             height={220}
@@ -156,16 +160,14 @@ const HomeInit = () => {
                 {
                     scaleType: 'point',
                     data: byDay?.data.balance_by_period.map((item) =>
-                    new Date(item.day + 'T00:00:00').toLocaleDateString('en-US', {
+                    new Date(item.day).toLocaleDateString('en-US', {
                         month: 'short',
                         day: 'numeric'
                     })
                 ) ?? [],
                 },
-            ]}/>)}
-            {byDay && byDay.data.balance_by_period.length <= 1 && (
-                <Typography variant="h4"textAlign= 'center' mt={5}>Not enough data to display chart</Typography>
-            )}
+            ]}/>) : (<Typography variant="h5"textAlign= 'center' mt={5} pb={5}>Not enough data to display yet</Typography>)}
+
             </Box>
         </Box>
     )
