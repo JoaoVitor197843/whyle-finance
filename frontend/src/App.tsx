@@ -7,6 +7,7 @@ import { VerifyEmail } from './pages/auth/verifyEmail';
 import LandingPage from './pages/landingPage/landingPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import HomeInit from './pages/home/homeInit';
+import Logout from './pages/auth/logout';
 
 const App = () => {
   return (
@@ -19,6 +20,7 @@ const App = () => {
         <Route path='/register' element={<Register />} />
       </Route>
       <Route element={<ProtectedRoute type/>}>
+        <Route path='/logout' element={<Logout />}/>
         <Route path='/home' element={<HomeLayout />}>
           <Route index element={<HomeInit />}/>
         </Route>

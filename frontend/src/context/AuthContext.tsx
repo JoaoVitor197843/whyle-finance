@@ -17,7 +17,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode}) => {
                 await api.get('/auth/me/')
                 setIsAuthenticated(true)
             } catch {
+                try {
+                    await api.post('/auth/token-refresh/')
+                    await api.get('/auth/me/')
+                    setIsAuthenticated(true)
+                } catch {
                 setIsAuthenticated(false)
+                }
             }
         }
         verify();

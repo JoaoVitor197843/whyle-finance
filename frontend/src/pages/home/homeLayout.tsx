@@ -56,8 +56,8 @@ export const HomeLayout = () => {
                         <AccountCircle />
                     </IconButton>
                     <Menu anchorEl={anchorEl} open={!!anchorEl} onClose={handleClose}>
-                        <MenuItem onClick={() => navigate('/login')}>
-                            Login
+                        <MenuItem onClick={() => navigate('/logout')}>
+                            Logout
                         </MenuItem>
                         <MenuItem onClick={() => navigate('/register')}>
                             Register
