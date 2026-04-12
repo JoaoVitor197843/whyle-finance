@@ -114,8 +114,10 @@ const HomeInit = () => {
                     key={p} 
                     onClick={() => setPeriod(p)} 
                     sx={{
-                        py: '4px',
-                        px: '12px',
+                        minWidth: 0,
+                        py: 'clamp(2px, 1vw, 4px)',
+                        px: 'clamp(6px, 4vw, 12px)',
+                        fontSize: 'clamp(10px, 2vw, 14px)',
                         borderRadius: 6,
                         border: 'none',
                         cursor: 'pointer',
