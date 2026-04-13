@@ -1,4 +1,3 @@
-
 import { Route, Routes } from 'react-router-dom';
 import { Login } from './pages/auth/login';
 import { Register } from './pages/auth/register';
@@ -19,6 +18,7 @@ const App = () => {
       <Route element={<ProtectedRoute type={false}/>}>
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />
+        <Route path='/verify-email' element={<VerifyEmail />}/>
       </Route>
       <Route element={<ProtectedRoute type/>}>
         <Route path='/logout' element={<Logout />}/>
@@ -26,7 +26,6 @@ const App = () => {
           <Route index element={<HomeInit />}/>
           <Route path='transactions' element={<HomeTransactions />}/>
         </Route>
-        <Route path='/verify-email' element={<VerifyEmail />}/>
       </Route>
     </Routes>
   </>
