@@ -8,6 +8,7 @@ import LandingPage from './pages/landingPage/landingPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import HomeInit from './pages/home/homeInit';
 import Logout from './pages/auth/logout';
+import HomeTransactions from './pages/home/homeTransactions';
 
 const App = () => {
   return (
@@ -23,6 +24,7 @@ const App = () => {
         <Route path='/logout' element={<Logout />}/>
         <Route path='/home' element={<HomeLayout />}>
           <Route index element={<HomeInit />}/>
+          <Route path='transactions' element={<HomeTransactions />}/>
         </Route>
         <Route path='/verify-email' element={<VerifyEmail />}/>
       </Route>

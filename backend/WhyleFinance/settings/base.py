@@ -117,9 +117,6 @@ REST_FRAMEWORK = {
      'DEFAULT_AUTHENTICATION_CLASSES': [
         'Finance.utils.auth.CookieJWTAuthentication',
        ],
-    'DEFAULT_PAGINATION_CLASS': 
-        'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 20,
     'EXCEPTION_HANDLER': 'Finance.exceptions.custom_exception_handler.custom_exception_handler',
 }
 

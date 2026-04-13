@@ -10,6 +10,7 @@ class Transaction(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     category: Category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
     value = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(Decimal(0.01))])
+    description = models.CharField(max_length=255, blank=True, null=True)
     transaction_type = models.CharField(max_length=10, choices=TransactionType.choices, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -17,7 +18,7 @@ class Transaction(models.Model):
     class Meta:
         verbose_name = 'Transaction'
         verbose_name_plural = 'Transactions'
-        ordering = ['-updated_at']
+        ordering = ['-created_at']
         indexes = [models.Index(fields=['category'])]
         constraints = [
             models.CheckConstraint(condition=models.Q(value__gte=Decimal(0.01)), name='value_min_range')

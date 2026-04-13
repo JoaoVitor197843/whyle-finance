@@ -16,6 +16,7 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Home from "@mui/icons-material/Home";
+import Receipt from "@mui/icons-material/Receipt";
 import { useState } from "react";
 export const HomeLayout = () => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
@@ -44,6 +45,12 @@ export const HomeLayout = () => {
                         <Home />
                     </ListItemIcon>
                     <ListItemText primary='Home'/>
+                </ListItemButton>
+                <ListItemButton onClick={() => navigate('/home/transactions')}>
+                    <ListItemIcon>
+                        <Receipt />
+                    </ListItemIcon>
+                    <ListItemText primary='Transactions'/>
                 </ListItemButton>
             </List>
         </Drawer>

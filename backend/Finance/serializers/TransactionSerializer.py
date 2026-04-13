@@ -1,14 +1,22 @@
 from . import *
 from typing import Any, Dict
 class TransactionSerializer(serializers.ModelSerializer):
+    category_name = serializers.SerializerMethodField()
+    def get_category_name(self, obj):
+        return obj.category.name if obj.category else 'Uncategorized'
     class Meta:
         model = Transaction
         fields = (
             "id",
-            "category",
+            'description',
+            'category',
+            "category_name",
             "value",
             "transaction_type",
             "created_at")
+        extra_kwargs = {
+            'created_at': {'format': '%m/%d/%Y'}
+        }
         
     def validate(self, data: Dict[str, Any]) -> Dict[str, Any] | ValidationError:
         category: Category | None = data.get('category')
