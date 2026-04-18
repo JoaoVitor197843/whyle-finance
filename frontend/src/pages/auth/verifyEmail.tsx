@@ -15,7 +15,7 @@ export const VerifyEmail = () => {
     const [params] = useSearchParams();
     const navigate = useNavigate();
     const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
-    const [error, setError] = useState<Record<string, string>>({})
+    const [error, setError] = useState<Record<string, string> | null>({})
     const [count, setCount] = useState(5)
     useEffect(() => {
         if(status === 'success') {
@@ -58,11 +58,11 @@ export const VerifyEmail = () => {
                 </DialogContent>
             </Dialog>
             
-            <Snackbar open={status === 'error'} anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}>
+            {error && <Snackbar open={status === 'error'} anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}>
                 <Alert severity="error">
                     {Object.entries(error).map(([_ , message]) => message)}
                 </Alert>
-            </Snackbar>
+            </Snackbar>}
         </> 
     )
 }

@@ -23,7 +23,7 @@ export function handleApiFormErrors(errorData: ErrorData, setError: UseFormSetEr
     return errorData;
 }
 
-export function handleApiErrors(errorData: ErrorData, setErrors: React.Dispatch<React.SetStateAction<Record<string, string>>>) {
+export function handleApiErrors(errorData: ErrorData, setErrors: React.Dispatch<React.SetStateAction<Record<string, string> | null>>) {
 
     if(errorData.errors) {
         const errors = errorData.errors;

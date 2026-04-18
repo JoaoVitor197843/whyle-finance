@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Logout = () => {
     const [isLogout, setIsLogout] = useState<null | boolean>(null);
-    const [error, setError] = useState<Record<string, string>>({});
+    const [error, setError] = useState<Record<string, string> | null>({});
     const [count, setCount] = useState(5);
     const navigate = useNavigate();
     useEffect(() => {
@@ -52,7 +52,7 @@ const Logout = () => {
                     <DialogContentText>You are now logged out. You'll be redirected in {count} seconds</DialogContentText>
                 </DialogContent>
             </Dialog>) : 
-            (<Snackbar open anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}>
+            (error && <Snackbar open anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}>
                 <Alert severity='error'>
                     {Object.entries(error).map(([_ , message]) => message)}
                 </Alert>

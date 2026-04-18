@@ -104,6 +104,7 @@ export const  Login = () => {
                             Don't have an account?{" "}
                             <Link component={RouterLink} to="/register" sx={{fontWeight: 600}}>Sign Up</Link>
                         </Typography>
+                        <Link component={RouterLink} to="/forgot-password" sx={{fontWeight: 600}}>Forgot password?</Link>
                     </Box>
             </Box>
        </CardContent>
