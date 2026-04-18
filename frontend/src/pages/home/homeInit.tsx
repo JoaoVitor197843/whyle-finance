@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import { api } from "../../api/apiConnect";
-import { PieChart } from "@mui/x-charts/PieChart";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import MetricCard from "../../components/MetricCard";
 import Button from '@mui/material/Button'
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
-import { LineChart } from '@mui/x-charts/LineChart'
+import { LineChart, PieChart } from '@mui/x-charts'
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 interface Category {

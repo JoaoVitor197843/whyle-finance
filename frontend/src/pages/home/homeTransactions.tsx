@@ -1,24 +1,28 @@
 import { DataGrid, GridPagination } from '@mui/x-data-grid';
-import DeleteIcon from '@mui/icons-material/Delete'
+import DeleteIcon from '@mui/icons-material/Delete';
 import type { GridColDef } from '@mui/x-data-grid';
-import TextField from "@mui/material/TextField"
-import DialogContent from "@mui/material/DialogContent"
-import DialogContentText from "@mui/material/DialogContentText"
+import TextField from "@mui/material/TextField";
+import DialogContent from "@mui/material/DialogContent";
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
+import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Dialog from "@mui/material/Dialog";
 import DialogAction from '@mui/material/DialogActions';
 import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close'
+import CloseIcon from '@mui/icons-material/Close';
+import EditIcon from '@mui/icons-material/Edit';
+import { NumericFormat } from 'react-number-format'
 import { useEffect, useState } from 'react';
 import { api } from '../../api/apiConnect';
 import { useForm, Controller } from 'react-hook-form';
 import { handleApiFormErrors } from '../../api/handleApiErrors';
 import Button from '@mui/material/Button';
-import Box from '@mui/material/Box'
-import Select from '@mui/material/Select'
-import MenuItem from '@mui/material/MenuItem'
-import InputLabel from '@mui/material/InputLabel'
-import FormControl from '@mui/material/FormControl'
+import Box from '@mui/material/Box';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
 
 interface Transactions {
     id: number;
@@ -57,16 +61,18 @@ interface TransactionForm {
 
 const HomeTransactions = () => {
     const [transactions, setTransactions] = useState<TransactionResponse | null>(null);
-    const { control, handleSubmit, setError, setValue, reset } = useForm<TransactionForm>();
+    const { control, handleSubmit, setError, setValue, reset } = useForm<TransactionForm>({shouldUnregister: true, defaultValues: { description: undefined, value: undefined, transaction_type: undefined, category: undefined}});
     const [apiError, setApiError] = useState<string>('');
-    const [openModal, setOpenModal] = useState(false);
+    const [openModal, setOpenModal] = useState({opened: false, formType: ''});
     const [categories, setCategories] = useState<CategoryResponse>();
-    const [selectedId, setSelectedId] = useState<number | null>(null)
+    const [selectedId, setSelectedId] = useState<number | null>(null);
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
     const columns: GridColDef[] = [
-        { field: 'id', headerName: 'ID', width: 70},
         { field: 'description', headerName: 'Description', flex: 1},
         { field: 'category_name', headerName: 'Category', width: 150},
-        { field: 'value', headerName: 'Value', width: 120},
+        { field: 'value', headerName: 'Value', width: 120, valueFormatter: (value) => {return new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'}).format(value)}},
         { field: 'transaction_type', headerName: 'Type', width: 120},
         { field: 'created_at', headerName: 'Date', width: 150},
     ];
@@ -83,6 +89,23 @@ const HomeTransactions = () => {
         getTransactions();
     }, [])
 
+    const onUpdate = (id: number) => {
+        const transaction = transactions?.data.find((trans) => trans.id === id);
+                        if (transaction) {
+                            setSelectedId(id)
+                            const category = categories?.data.find((cat) => cat.name === transaction.category_name)
+                            const category_id = category ? category.id : undefined
+                            setValue('description', transaction.description)
+                            setValue('value', Number(transaction.value))
+                            setValue('transaction_type', transaction.transaction_type)
+                            setValue('category', category_id ? category_id : null)
+                            setOpenModal({opened: true, formType: 'Update'});
+                        }
+    }
+
+    const updateTransaction = async (id: number, data: Record<string, any>) => {
+        await api.patch(`/transactions/${id}/`, data)
+        getTransactions()    }
     useEffect(() => {
         const getCategories = async () => {
             const response = await api.get('/category/');
@@ -91,13 +114,18 @@ const HomeTransactions = () => {
         getCategories();
     }, [])
     const handleClose = () => {
-        setOpenModal(false)
-        reset()
+        setOpenModal({opened: false, formType: ''})
+        reset();
     }
     const onSubmit = async (data: TransactionForm) => {
         try {
+            if (openModal.formType === 'Create') {
             await api.post('/transactions/', data);
             getTransactions();
+
+            } else if (openModal.formType === 'Update') {
+                await updateTransaction(selectedId!, data)   
+            };
             handleClose();
         } catch (err: any) {
             handleApiFormErrors(err.response.data, setError, setApiError)
@@ -106,7 +134,7 @@ const HomeTransactions = () => {
 
     return (
         <Box display='flex' flexDirection='column' height='90%' width='60%'>
-            <Button sx={{alignSelf: 'flex-end', mb: 2}} variant='contained' onClick={() => setOpenModal(true)}>Create</Button>
+            <Button sx={{alignSelf: 'flex-end', mb: 2}} variant='contained' onClick={() => {setOpenModal({opened: true, formType: 'Create'});}}>Create</Button>
             <DataGrid
             rows={transactions?.data ?? []}
             columns={columns}
@@ -122,30 +150,36 @@ const HomeTransactions = () => {
                     <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', p: 1}}>
                         <Box>
                             {selectedId && (
-                                <Button color='error' onClick={() => deleteTransaction(selectedId)} startIcon={<DeleteIcon />}>
-                                Delete
-                                </Button>
+                                <>
+                                    <Button color='error' onClick={() => deleteTransaction(selectedId)} startIcon={<DeleteIcon />}>
+                                    {isMobile ? '' : 'Delete'}
+                                    </Button>
+                                    
+                                    <Button color='warning' onClick={() => onUpdate(selectedId)} startIcon={< EditIcon />}>
+                                      { isMobile ? '' : 'Update'}
+                                    </Button>
+                                </>
                             )}
                         </Box>
                         <GridPagination />
                     </Box>
                 )
             }}/>
-            <Dialog open={openModal}  onClose={handleClose}>
+            <Dialog open={openModal.opened}  onClose={handleClose}>
                 <Box component='form' noValidate onSubmit={handleSubmit(onSubmit)}>
                     <DialogAction>
                         <IconButton onClick={() => handleClose()}>
                             <CloseIcon/>
                         </IconButton>
                     </DialogAction>
-                    <DialogTitle sx={{mb: 5}}>Create transaction</DialogTitle>
+                    <DialogTitle sx={{mb: 5}}>{openModal.formType} transaction</DialogTitle>
                     <DialogContent>
                         <Controller 
                         name='description'
                         control={control}
                         defaultValue=''
                         render={({ field, fieldState }) => (
-                            <TextField 
+                            <TextField
                             {...field}
                             label='Description'
                             type="text"
@@ -159,16 +193,24 @@ const HomeTransactions = () => {
                         name='value'
                         control={control}
                         rules={{ required: "Value required"}}
-                        render={({ field, fieldState }) => (
-                            <TextField 
-                            {...field}
+                        render={({ field: {onChange, ...restField}, fieldState }) => (
+                            <NumericFormat
+                            {...restField}
+                            onValueChange={(values) => onChange(values.floatValue ?? '')}
+                            customInput={TextField}
                             label='Value'
-                            type="text"
+                            decimalSeparator='.'
+                            thousandSeparator=','
+                            decimalScale={2}
+                            fixedDecimalScale
+                            allowNegative={false}
+                            prefix='$'
                             error={!!fieldState.error}
                             helperText={fieldState.error?.message || " "}
                             variant="outlined"
                             autoComplete="off"
                             fullWidth
+                            
                             required/>
                             )}/>
                         <Controller 
