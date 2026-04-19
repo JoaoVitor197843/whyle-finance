@@ -9,6 +9,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Dialog from "@mui/material/Dialog";
 import CircularProgress from "@mui/material/CircularProgress";
 import { handleApiErrors } from "../../api/handleApiErrors";
+import axios from "axios";
 
 
 export const VerifyEmail = () => {
@@ -23,13 +24,14 @@ export const VerifyEmail = () => {
                             setCount(prev => {
                                 if(prev === 1) {
                                     clearInterval(interval)
-                                    navigate('/login')
+                                    void navigate('/login')
                                 }
                                 return prev - 1
                             })
                         }, 1000)
                         return () => clearInterval(interval)
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [status])
 
     useEffect(() => {
@@ -40,12 +42,15 @@ export const VerifyEmail = () => {
             await verifyEmail({token: token, uid: uid})
             
             setStatus("success")
-            } catch(err: any) {
-                handleApiErrors(err.response.data, setError)
+            } catch(err: unknown) {
+                if (axios.isAxiosError(err)){
+                handleApiErrors(err.response?.data, setError)
+                }
                 setStatus('error')
             }
         }
-        verify()
+        void verify()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     return (
@@ -60,7 +65,7 @@ export const VerifyEmail = () => {
             
             {error && <Snackbar open={status === 'error'} anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}>
                 <Alert severity="error">
-                    {Object.entries(error).map(([_ , message]) => message)}
+                    {Object.entries(error).map(([, message]) => message)}
                 </Alert>
             </Snackbar>}
         </> 

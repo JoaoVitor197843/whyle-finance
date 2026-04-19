@@ -17,6 +17,7 @@ import { useState } from "react";
 import { login } from "../../api/auth/login";
 import { handleApiFormErrors } from "../../api/handleApiErrors";
 import { useAuth } from "../../context/AuthContext";
+import axios from "axios";
 
 type FormData = {
     email: string;
@@ -33,9 +34,11 @@ export const  Login = () => {
         try {
             await login(data);
             loginSuccess();
-            navigate('/home')
-        } catch (err: any) {
-            handleApiFormErrors(err.response.data, setError, setApiError)
+            void navigate('/home')
+        } catch (err: unknown) {
+            if (axios.isAxiosError(err)) {
+            handleApiFormErrors(err.response?.data, setError, setApiError)
+            }
         }
     }
 

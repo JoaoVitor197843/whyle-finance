@@ -1,16 +1,16 @@
-import type { UseFormSetError } from "react-hook-form"
+import type { UseFormSetError, FieldValues } from "react-hook-form"
 
 type ErrorData = {
     detail: string
     errors?: Record<string, string[]>
 }
 
-export function handleApiFormErrors(errorData: ErrorData, setError: UseFormSetError<any>, setGlobalErrors: React.Dispatch<React.SetStateAction<string>>) {
+export function handleApiFormErrors<T extends FieldValues>(errorData: ErrorData, setError: UseFormSetError<T>, setGlobalErrors: React.Dispatch<React.SetStateAction<string>>) {
 
     if(errorData.errors) {
         const errors = errorData.errors;
         Object.entries(errors).forEach(([field, messages]) => {
-            setError(field, {
+            setError(field as Parameters<UseFormSetError<T>>[0], {
                 type: "server",
                 message: messages?.[0] || "Unknown error"
             });

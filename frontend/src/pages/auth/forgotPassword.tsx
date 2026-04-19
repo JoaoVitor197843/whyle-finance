@@ -10,6 +10,7 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from "@mui/material/Alert";
 import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
+import axios from "axios";
 
 interface ForgotData {
     email: string
@@ -20,9 +21,11 @@ const ForgotPassword = () => {
     const {handleSubmit, control} = useForm<ForgotData>();
     const onSubmit = async (data: ForgotData) => {
         try {
-            api.post('auth/forgot-password/', data)
-        } catch (err: any){
-            handleApiErrors(err.response.data, setError)
+            await api.post('auth/forgot-password/', data)
+        } catch (err: unknown){
+            if (axios.isAxiosError(err)){
+            handleApiErrors(err.response?.data, setError)
+            }
         }
     }
     return (
@@ -63,7 +66,7 @@ const ForgotPassword = () => {
         onClose={() => setError(null)}
         anchorOrigin={{vertical: 'bottom', horizontal: "right"}}>
             <Alert severity='error' onClose={() => setError(null)}>
-                {Object.entries(error).map(([_ , message]) => message)}
+                {Object.entries(error).map(([, message]) => message)}
             </Alert>
         </Snackbar>}
     </>

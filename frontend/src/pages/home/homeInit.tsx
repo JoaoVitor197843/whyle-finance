@@ -57,14 +57,14 @@ const HomeInit = () => {
             const response = await api.get('/transactions/summary/');
             setSummary(response.data)
         }
-        getData();
+        void getData();
     }, [])
     useEffect(() => {
         const getData = async () => {
             const response = await api.post('/transactions/by-date/', {period: period})
             setByDay(response.data)
         }
-        getData();
+        void getData();
     },[period])
 
     if (!summary) return null

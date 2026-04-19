@@ -10,6 +10,7 @@ import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert'
 import { handleApiErrors } from '../../api/handleApiErrors';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const Logout = () => {
     const [isLogout, setIsLogout] = useState<null | boolean>(null);
@@ -21,12 +22,14 @@ const Logout = () => {
             try {
                 await api.post('/auth/logout/')
                 setIsLogout(true)
-            } catch (err: any){
-                handleApiErrors(err.response.data, setError)
+            } catch (err: unknown){
+                if (axios.isAxiosError(err)) {
+                handleApiErrors(err.response?.data, setError)
+                }
                 setIsLogout(false)
             }
         }
-        logout();
+        void logout();
     }, [])
         
     useEffect(() => {
@@ -35,13 +38,14 @@ const Logout = () => {
                             setCount(prev => {
                                 if(prev === 1) {
                                     clearInterval(interval)
-                                    navigate('/')
+                                    void navigate('/')
                                 }
                                 return prev - 1
                             })
                         }, 1000)
                         return () => clearInterval(interval)
         }
+        //eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isLogout])
     if(isLogout === null) return <CircularProgress />
     return (
@@ -54,7 +58,7 @@ const Logout = () => {
             </Dialog>) : 
             (error && <Snackbar open anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}>
                 <Alert severity='error'>
-                    {Object.entries(error).map(([_ , message]) => message)}
+                    {Object.entries(error).map(([, message]) => message)}
                 </Alert>
             </Snackbar>)}
             

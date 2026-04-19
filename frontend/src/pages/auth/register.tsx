@@ -21,6 +21,7 @@ import { useForm, Controller } from "react-hook-form";
 import { useState } from 'react';
 import { register } from '../../api/auth/register';
 import { handleApiFormErrors } from '../../api/handleApiErrors';
+import axios from 'axios';
 
 type FormData = {
     email: string;
@@ -32,7 +33,7 @@ type FormData = {
 }
 
 export const Register = () =>  {
-    const { control, handleSubmit, watch, setError} = useForm<FormData>();
+    const { control, handleSubmit, getValues, setError} = useForm<FormData>();
     const [ showPassword, setShowPassword ] = useState({
         password: false,
         confirmPassword: false
@@ -44,8 +45,10 @@ export const Register = () =>  {
         try {
             await register(data);
             setIsOpen(true)
-        } catch (err: any) {
-            handleApiFormErrors(err.response.data, setError, setApiError)
+        } catch (err: unknown) {
+            if(axios.isAxiosError(err)) {
+            handleApiFormErrors(err.response?.data, setError, setApiError)
+        }
         }
     }
     return (
@@ -154,7 +157,7 @@ export const Register = () =>  {
                     rules={{
                     required: 'Confirmation password Required',
                     validate: (value) =>
-                        value === watch('password') || "The passwords don't match"
+                        value === getValues('password') || "The passwords don't match"
                     }}
                     render={({ field,   fieldState }) => (
                         <TextField 

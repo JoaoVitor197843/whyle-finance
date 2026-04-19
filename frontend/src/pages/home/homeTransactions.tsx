@@ -23,6 +23,7 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
+import axios from 'axios';
 
 interface Transactions {
     id: number;
@@ -83,10 +84,11 @@ const HomeTransactions = () => {
             };
     const deleteTransaction = async (id: number) => {
         await api.delete(`/transactions/${id}/`)
-        getTransactions();
+        void getTransactions();
     };
     useEffect(() => {
-        getTransactions();
+        //eslint-disable-next-line
+        void getTransactions();
     }, [])
 
     const onUpdate = (id: number) => {
@@ -103,15 +105,15 @@ const HomeTransactions = () => {
                         }
     }
 
-    const updateTransaction = async (id: number, data: Record<string, any>) => {
+    const updateTransaction = async (id: number, data: TransactionForm) => {
         await api.patch(`/transactions/${id}/`, data)
-        getTransactions()    }
+        void getTransactions()    }
     useEffect(() => {
         const getCategories = async () => {
             const response = await api.get('/category/');
             setCategories(response.data)
         }
-        getCategories();
+        void getCategories();
     }, [])
     const handleClose = () => {
         setOpenModal({opened: false, formType: ''})
@@ -121,14 +123,16 @@ const HomeTransactions = () => {
         try {
             if (openModal.formType === 'Create') {
             await api.post('/transactions/', data);
-            getTransactions();
+            void getTransactions();
 
             } else if (openModal.formType === 'Update') {
                 await updateTransaction(selectedId!, data)   
             };
             handleClose();
-        } catch (err: any) {
-            handleApiFormErrors(err.response.data, setError, setApiError)
+        } catch (err: unknown) {
+            if (axios.isAxiosError(err)) {
+            handleApiFormErrors(err.response?.data, setError, setApiError)
+            }
         }
     }
 

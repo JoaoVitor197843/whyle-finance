@@ -10,13 +10,18 @@ const ResetPassword = () => {
 
     useEffect(() => {
         const verifyToken = async () => {
+            if (!uid || !token) {
+                void navigate('/forgot-password')
+                return;
+            }
             try {
-            api.get(`/auth/reset-password/?uid=${uid}&token=${token}`)
+            await api.get(`/auth/reset-password/?uid=${uid}&token=${token}`)
             } catch {
-                navigate('/forgot-password')
+                void navigate('/forgot-password')
             }
         }
-        verifyToken();
+        void verifyToken();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     return (

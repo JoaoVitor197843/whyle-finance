@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode}) => {
                 }
             }
         }
-        verify();
+        void verify();
     }, [])
 
     const loginSuccess = () => setIsAuthenticated(true);
@@ -37,7 +37,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode}) => {
         </AuthContext.Provider>
     )
 }
-
+//eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = (): AuthContextType => {
     const context = useContext(AuthContext);
     if (!context) throw new Error('useAuth must be used within AuthProvider');
