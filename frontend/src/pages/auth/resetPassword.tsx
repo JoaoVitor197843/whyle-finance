@@ -11,9 +11,9 @@ const ResetPassword = () => {
     useEffect(() => {
         const verifyToken = async () => {
             try {
-            api.get(`/reset-password/?uid=${uid}&token=${token}`)
+            api.get(`/auth/reset-password/?uid=${uid}&token=${token}`)
             } catch {
-                navigate('/forgot-password/')
+                navigate('/forgot-password')
             }
         }
         verifyToken();

@@ -9,6 +9,7 @@ import HomeInit from './pages/home/homeInit';
 import Logout from './pages/auth/logout';
 import HomeTransactions from './pages/home/homeTransactions';
 import ForgotPassword from './pages/auth/forgotPassword';
+import ResetPassword from './pages/auth/resetPassword';
 
 const App = () => {
   return (
@@ -17,6 +18,7 @@ const App = () => {
     <Routes>
       <Route path='/' element={<LandingPage />}/>
       <Route path='/forgot-password' element={<ForgotPassword />}/>
+      <Route path='/reset-password' element={<ResetPassword />}/>
       <Route element={<ProtectedRoute type={false}/>}>
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />

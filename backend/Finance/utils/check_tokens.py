@@ -5,8 +5,10 @@ from ..models import User
 from django.utils.http import urlsafe_base64_decode
 
 def check_tokens(token, uid, token_type):
-    if not uid:
+    if not uid or uid == 'null':
         raise ValidationError({'uid': ['Invalid UID']})
+    if not token or token == 'null':
+        raise ValidationError({'token': ['Invalid Token']})
     try:
         user_id = urlsafe_base64_decode(uid)
         user = User.objects.get(pk=int(user_id))
