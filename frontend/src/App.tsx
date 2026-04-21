@@ -10,6 +10,7 @@ import Logout from './pages/auth/logout';
 import HomeTransactions from './pages/home/homeTransactions';
 import ForgotPassword from './pages/auth/forgotPassword';
 import ResetPassword from './pages/auth/resetPassword';
+import { AuthProvider } from './context/AuthContext.tsx';
 
 const App = () => {
   return (
@@ -19,12 +20,12 @@ const App = () => {
       <Route path='/' element={<LandingPage />}/>
       <Route path='/forgot-password' element={<ForgotPassword />}/>
       <Route path='/reset-password' element={<ResetPassword />}/>
-      <Route element={<ProtectedRoute type={false}/>}>
+      <Route element={<AuthProvider><ProtectedRoute type={false}/></AuthProvider>}>
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />
         <Route path='/verify-email' element={<VerifyEmail />}/>
       </Route>
-      <Route element={<ProtectedRoute type/>}>
+      <Route element={<AuthProvider><ProtectedRoute type/></AuthProvider>}>
         <Route path='/logout' element={<Logout />}/>
         <Route path='/home' element={<HomeLayout />}>
           <Route index element={<HomeInit />}/>

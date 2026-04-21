@@ -42,6 +42,7 @@ const ForgotPassword = () => {
                 render={({field, fieldState}) => (
                     <TextField 
                     {...field}
+                    margin="dense"
                     label='Email'
                     type="email"
                     error={!!fieldState.error}

@@ -4,7 +4,7 @@ import App from './App.tsx'
 import { BrowserRouter } from 'react-router-dom'
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { CssBaseline } from '@mui/material';
-import { AuthProvider } from './context/AuthContext.tsx';
+
 
 const darkTheme = createTheme({
   palette: {
@@ -30,9 +30,7 @@ createRoot(document.getElementById('root')!).render(
     <BrowserRouter>
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
-      <AuthProvider>
         <App />
-      </AuthProvider>
       </ThemeProvider>
     </BrowserRouter>
 )

@@ -70,13 +70,16 @@ const HomeInit = () => {
     if (!summary) return null
 
     return (
-        <Box sx={{width: "100%", height: "100%", p: {sm: 10, xs: 5}}}>
-            <Stack direction="row" spacing={2} mb={10} justifyContent='center' display='flex'>
-                <MetricCard label="Balance" value={summary.data.balance}/>
-                <MetricCard label="Income" value={summary.data.income}/>
-                <MetricCard label="Expenses" value={summary.data.expenses}/>
-            </Stack>
-            <Grid container spacing={10} sx={{justifyContent: 'center'}}>
+        <Box sx={{width: "100%", height: "100%", p: {xs: 2, sm: 5}}}>
+            <Grid container spacing={3} mb={{xs: 5, md: 10}} columns={{xs: 4, md: 12}}>
+                <Grid size={4}><MetricCard label="Balance" value={summary.data.balance}/></Grid>
+                <Grid size={4}><MetricCard label="Income" value={summary.data.income}/></Grid>
+                <Grid size={4}><MetricCard label="Expenses" value={summary.data.expenses}/></Grid>
+                
+                
+                
+            </Grid>
+            <Grid container spacing={{xs: 5, md: 10}} sx={{justifyContent: 'center'}}>
                 <Grid>
                 <Typography variant="h5" sx={{textAlign: 'center', mb: 5}}>Categories by expenses</Typography>
 

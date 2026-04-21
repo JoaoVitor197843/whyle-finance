@@ -10,16 +10,20 @@ import Paper from "@mui/material/Paper";
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box"
 import { useNavigate } from "react-router-dom";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { useTheme } from "@mui/material/styles";
 
 const LandingPage = () => {
     const navigate = useNavigate();
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
     return (
         <ThemeProvider theme={landingTheme}>
             <CssBaseline />
             <AppBar sx={{p: 2, backgroundColor: "background.default"}} position="fixed">
                 <Toolbar sx={{justifyContent: "space-between"}}>
-                <Typography variant="h6" component="div" color="black">Whyle<Typography variant="h6" component="span" color="primary">Finance</Typography></Typography>
-                <Stack direction="row">
+                <Typography variant="h6" component="div" color="black" mr={1}>Whyle<Typography variant="h6" component="span" color="primary">Finance</Typography></Typography>
+                <Stack direction="row" display={isMobile ? 'none' : 'flex'}>
                     <Button sx={{color: "black", fontWeight: 500, fontSize: "1rem"}}>Features</Button>
                     <Button sx={{color: "black", fontWeight: 500, fontSize: "1rem"}}>How it works</Button>
                 </Stack>
@@ -35,7 +39,7 @@ const LandingPage = () => {
                     }}>
                         <Stack alignItems="center" justifyContent="center" textAlign="center" direction="column">
                             <Paper elevation={2} sx={{color: 'primary.main', py: 0.5, px: "14px", '&:hover': {boxShadow: 6}}}>Personal finance, simplified</Paper>
-                            <Typography variant="h2" sx={{mb: 4, mt: 3}}>Your Finances,</Typography>
+                            <Typography variant="h2" sx={{mt: 3}}>Your Finances,</Typography>
                             <Typography variant="h2" color="primary">Truly organized</Typography>
                             <Typography textAlign="center" variant="body1"  maxWidth="500px">Track expenses, set goals, and understand where your money goes - all in one place</Typography>
                         </Stack>

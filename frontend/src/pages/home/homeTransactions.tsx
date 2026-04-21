@@ -68,13 +68,24 @@ const HomeTransactions = () => {
     const [categories, setCategories] = useState<CategoryResponse>();
     const [selectedId, setSelectedId] = useState<number | null>(null);
     const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const isTablet = useMediaQuery(theme.breakpoints.down('md'));
+    const isMobile = useMediaQuery('(max-width: 660px)');
 
     const columns: GridColDef[] = [
         { field: 'description', headerName: 'Description', flex: 1},
         { field: 'category_name', headerName: 'Category', width: 150},
-        { field: 'value', headerName: 'Value', width: 120, valueFormatter: (value) => {return new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'}).format(value)}},
-        { field: 'transaction_type', headerName: 'Type', width: 120},
+        { field: 'value', headerName: 'Value', width: 120, valueGetter: (value, row) => {
+            const originalValue = Number(value);
+            if (isMobile){
+            return row.transaction_type === 'expense' ? -originalValue : originalValue
+        }
+        return originalValue
+        }, 
+            valueFormatter: (value) => {
+            return new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'}).format(value)}},
+        { field: 'transaction_type', headerName: 'Type', width: 120, 
+            valueFormatter: (value: string) => {
+                return value.charAt(0).toUpperCase() + value.slice(1)}},
         { field: 'created_at', headerName: 'Date', width: 150},
     ];
 
@@ -137,7 +148,7 @@ const HomeTransactions = () => {
     }
 
     return (
-        <Box display='flex' flexDirection='column' height='90%' width='60%'>
+        <Box display='flex' flexDirection='column' height='90%' width={{xs: '90%',xl: '60%'}}>
             <Button sx={{alignSelf: 'flex-end', mb: 2}} variant='contained' onClick={() => {setOpenModal({opened: true, formType: 'Create'});}}>Create</Button>
             <DataGrid
             rows={transactions?.data ?? []}
@@ -149,6 +160,12 @@ const HomeTransactions = () => {
             onRowSelectionModelChange={(model) => {
                 setSelectedId(model.ids.size > 0 ? Number([...model.ids][0]) : null)
             }}
+            columnVisibilityModel={isMobile ? {
+                transaction_type: false,
+                created_at: false
+            } : isTablet ? {
+                created_at: false
+            } : {}}
             slots={{
                 footer: () => (
                     <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', p: 1}}>

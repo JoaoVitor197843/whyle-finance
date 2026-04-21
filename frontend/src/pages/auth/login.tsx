@@ -103,11 +103,11 @@ export const  Login = () => {
                         fontWeight: 600
                     }}>Login</Button>
                     <Box textAlign="end" mt={1}>
-                        <Typography variant="body2">
+                        <Typography variant="body2" sx={{mb: 2}}>
                             Don't have an account?{" "}
                             <Link component={RouterLink} to="/register" sx={{fontWeight: 600}}>Sign Up</Link>
                         </Typography>
-                        <Link component={RouterLink} to="/forgot-password" sx={{fontWeight: 600}}>Forgot password?</Link>
+                        <Link component={RouterLink} to="/forgot-password" sx={{fontWeight: 600}} variant="body2">Forgot password?</Link>
                     </Box>
             </Box>
        </CardContent>

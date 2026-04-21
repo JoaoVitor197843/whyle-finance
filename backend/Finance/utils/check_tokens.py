@@ -14,6 +14,8 @@ def check_tokens(token, uid, token_type):
         user = User.objects.get(pk=int(user_id))
     except User.DoesNotExist:
         raise NotFound({'user': ['Invalid User']})
+    except ValueError:
+        raise ValidationError({'uid': ['Invalid UID']})
     if token_type == 'email':
         check_token = EmailVerificationTokenGenerator().check_token(user, token)
     elif token_type == 'password':
