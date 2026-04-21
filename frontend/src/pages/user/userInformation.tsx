@@ -21,32 +21,32 @@ interface UserInformationData {
     last_name: string | null;
     created_at: string
 }
-interface PatchUsernameData {
-    username: string;
-    password: string;
-}
-interface PatchNameData {
-    first_name: string;
-    last_name: string;
-    password: string;
-}
-interface ChangePassword {
-    current_password: string;
-    new_password: string;
-}
+// interface PatchUsernameData {
+//     username: string;
+//     password: string;
+// }
+// interface PatchNameData {
+//     first_name: string;
+//     last_name: string;
+//     password: string;
+// }
+// interface ChangePassword {
+//     current_password: string;
+//     new_password: string;
+// }
 
 const UserInformation = () => {
-    const {handleSubmit: handleUsernameSubmit, setError: setUsernameError, control: usernameControl} = useForm<PatchUsernameData>();
-    const {handleSubmit: handlePasswordSubmit, setError: setPasswordError, control: passwordControl} = useForm<ChangePassword>(); 
-    const {handleSubmit: handleNameSubmit, setError: setNameError, control: nameControl} = useForm<PatchNameData>();
+    // const {handleSubmit: handleUsernameSubmit, setError: setUsernameError, control: usernameControl} = useForm<PatchUsernameData>();
+    // const {handleSubmit: handlePasswordSubmit, setError: setPasswordError, control: passwordControl} = useForm<ChangePassword>(); 
+    // const {handleSubmit: handleNameSubmit, setError: setNameError, control: nameControl} = useForm<PatchNameData>();
     const [informations, setInformations] = useState<UserInformationData | null>(null);
-    const [apiError, setApiError] = useState<string>("");
-    const [isOpen, setIsOpen] = useState({
-        password: false,
-        username: false,
-        name: false,
-        delete: false
-    })
+    // const [apiError, setApiError] = useState<string>("");
+    // const [isOpen, setIsOpen] = useState({
+    //     password: false,
+    //     username: false,
+    //     name: false,
+    //     delete: false
+    // })
     const navigate = useNavigate();
     useEffect(() => {
         const verifyUserInfo = async () => {
@@ -61,37 +61,37 @@ const UserInformation = () => {
         };
         void verifyUserInfo();
     }, [])
-    const onUsernameSubmit = async (data: PatchUsernameData) => {
-        try {
-            const response = await api.patch('/user/change-username/', data)
-            setInformations(response.data.data)
-            } catch (err) {
-                if (axios.isAxiosError(err)) {
-                    handleApiFormErrors(err.response?.data, setUsernameError, setApiError)
-                }
-            }
-    }
-    const onNameSubmit = async (data: PatchNameData) => {
-        try {
-            const response = await api.patch('/user/change-name/', data)
-            setInformations(response.data.data)
-            } catch (err) {
-                if (axios.isAxiosError(err)) {
-                    handleApiFormErrors(err.response?.data, setNameError, setApiError)
-                }
-            }
-    }
-    const onPasswordSubmit = async (data: ChangePassword) => {
-        try {
-            const response = await api.patch('/user/change-password', data)
-            setInformations(response.data.data)
+    // const onUsernameSubmit = async (data: PatchUsernameData) => {
+    //     try {
+    //         const response = await api.patch('/user/change-username/', data)
+    //         setInformations(response.data.data)
+    //         } catch (err) {
+    //             if (axios.isAxiosError(err)) {
+    //                 handleApiFormErrors(err.response?.data, setUsernameError, setApiError)
+    //             }
+    //         }
+    // }
+    // const onNameSubmit = async (data: PatchNameData) => {
+    //     try {
+    //         const response = await api.patch('/user/change-name/', data)
+    //         setInformations(response.data.data)
+    //         } catch (err) {
+    //             if (axios.isAxiosError(err)) {
+    //                 handleApiFormErrors(err.response?.data, setNameError, setApiError)
+    //             }
+    //         }
+    // }
+    // const onPasswordSubmit = async (data: ChangePassword) => {
+    //     try {
+    //         const response = await api.patch('/user/change-password', data)
+    //         setInformations(response.data.data)
             
-            } catch (err) {
-                if (axios.isAxiosError(err)) {
-                    handleApiFormErrors(err.response?.data, setPasswordError, setApiError)
-                }
-            }
-    }
+    //         } catch (err) {
+    //             if (axios.isAxiosError(err)) {
+    //                 handleApiFormErrors(err.response?.data, setPasswordError, setApiError)
+    //             }
+    //         }
+    // }
     return (
         <Box height={'100vh'} display={"flex"} flexDirection={'column'}>
             <AppBar position="fixed">
