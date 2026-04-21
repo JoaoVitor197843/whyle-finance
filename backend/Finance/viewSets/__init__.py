@@ -8,3 +8,4 @@ import os
 from .CategoryViewSet import CategoryViewSet
 from .TransactionViewSet import TransactionsViewSet
 from .AuthViewSet import AuthViewSet
+from .UserViewSet import UserViewSet

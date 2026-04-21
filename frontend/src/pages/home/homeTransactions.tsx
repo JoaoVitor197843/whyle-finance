@@ -19,10 +19,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { handleApiFormErrors } from '../../api/handleApiErrors';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
-import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-import InputLabel from '@mui/material/InputLabel';
-import FormControl from '@mui/material/FormControl';
 import axios from 'axios';
 
 interface Transactions {
@@ -193,7 +190,7 @@ const HomeTransactions = () => {
                             <CloseIcon/>
                         </IconButton>
                     </DialogAction>
-                    <DialogTitle sx={{mb: 5}}>{openModal.formType} transaction</DialogTitle>
+                    <DialogTitle>{openModal.formType} transaction</DialogTitle>
                     <DialogContent>
                         <Controller 
                         name='description'
@@ -208,6 +205,7 @@ const HomeTransactions = () => {
                             helperText={fieldState.error?.message || " "}
                             variant="outlined"
                             autoComplete="off"
+                            margin='dense'
                             fullWidth/>
                         )}/>
                         <Controller 
@@ -238,13 +236,13 @@ const HomeTransactions = () => {
                         name='category'
                         control={control}
                         render={({ field }) => (
-                            <FormControl fullWidth sx={{mb: 5}}>
-                                <InputLabel id='category-label'>Category</InputLabel>
-                                <Select 
+                                <TextField 
                                 {...field} 
                                 label='Category'
-                                labelId='category-label'
+                                select
                                 value={field.value ?? ''}
+                                fullWidth
+                                helperText=' '
                                 onChange={(e) => {
                                     const id = Number(e.target.value)
                                     field.onChange(id)
@@ -259,19 +257,18 @@ const HomeTransactions = () => {
                                             {category.name}
                                         </MenuItem>
                                     ))}
-                                </Select>
-                            </FormControl>
+                                </TextField>
                         )}/>
                         <Controller 
                         name='transaction_type'
                         control={control}
                         render={({ field }) => (
-                            <FormControl fullWidth sx={{mb: 5}}>
-                                <InputLabel id='type-label'>Type</InputLabel>
-                                <Select 
+                                <TextField 
                                 {...field} 
-                                label='Category'
-                                labelId='type-label'
+                                label='Transaction Type'
+                                select
+                                fullWidth
+                                helperText=' '
                                 value={field.value ?? ''}
                                 onChange={(e) => {
                                     field.onChange(e.target.value)
@@ -283,13 +280,12 @@ const HomeTransactions = () => {
                                         <MenuItem key='expense' value='expense'>
                                         Expense
                                         </MenuItem>
-                                </Select>
-                            </FormControl>
+                                </TextField>
                         )}/>
                         <DialogContentText color='error'>{apiError ? apiError : ' '}</DialogContentText>
                     </DialogContent>
                     <DialogAction sx={{alignItems: 'center', display: 'flex', justifyContent: 'center'}}>
-                        <Button type='submit' variant='contained'>Save</Button>
+                        <Button type='submit' variant='contained' sx={{mb: 2}}>Save</Button>
                     </DialogAction>
                 </Box>
             </Dialog>

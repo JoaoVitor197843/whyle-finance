@@ -11,6 +11,7 @@ import HomeTransactions from './pages/home/homeTransactions';
 import ForgotPassword from './pages/auth/forgotPassword';
 import ResetPassword from './pages/auth/resetPassword';
 import { AuthProvider } from './context/AuthContext.tsx';
+import UserInformation from './pages/user/userInformation.tsx';
 
 const App = () => {
   return (
@@ -27,6 +28,7 @@ const App = () => {
       </Route>
       <Route element={<AuthProvider><ProtectedRoute type/></AuthProvider>}>
         <Route path='/logout' element={<Logout />}/>
+        <Route path='user' element={<UserInformation />}/>
         <Route path='/home' element={<HomeLayout />}>
           <Route index element={<HomeInit />}/>
           <Route path='transactions' element={<HomeTransactions />}/>

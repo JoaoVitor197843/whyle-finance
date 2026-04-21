@@ -4,9 +4,9 @@ from django.utils import timezone
 from rest_framework.permissions import IsAuthenticated
 from .base_model_view_set import BaseModelViewSet
 from rest_framework.request import Request
-from ..serializers.ByMonthSerializer import ByMonthSerializer
+from ..serializers.ByDateSerializer import ByDateSerializer
 from django.db.models.functions import TruncDay
-from django.db.models import DateField
+from ..utils import periods
 
 class TransactionsViewSet(BaseModelViewSet):
     serializer_class = TransactionSerializer
@@ -20,7 +20,7 @@ class TransactionsViewSet(BaseModelViewSet):
     
     @action(detail=False, methods=['get'], url_path='summary')
     def summary(self, request):
-        transactions = Transaction.objects.filter(user=request.user)
+        transactions = Transaction.objects.filter(user=request.user, created_at__gte=periods('1m'))
 
         balance = transactions.aggregate(
             balance=Sum(
@@ -48,7 +48,7 @@ class TransactionsViewSet(BaseModelViewSet):
     @action(detail=False, methods=['post'], url_path='by-date')
     def by_date(self, request: Request):
         
-        serializer = ByMonthSerializer(data=request.data)
+        serializer = ByDateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         transactions = Transaction.objects.filter(user=request.user)
         if serializer.data['period']:

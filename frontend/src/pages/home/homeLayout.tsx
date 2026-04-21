@@ -18,6 +18,7 @@ import ListItemText from "@mui/material/ListItemText";
 import Home from "@mui/icons-material/Home";
 import Receipt from "@mui/icons-material/Receipt";
 import { useState } from "react";
+import UserIcon from '@mui/icons-material/Person'
 export const HomeLayout = () => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
     const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -64,6 +65,10 @@ export const HomeLayout = () => {
                         <AccountCircle />
                     </IconButton>
                     <Menu anchorEl={anchorEl} open={!!anchorEl} onClose={handleClose}>
+                        <MenuItem onClick={() => navigate('/user')}>
+                            <UserIcon sx={{mr: 1}} fontSize="small"/>
+                            User Info
+                        </MenuItem>
                         <MenuItem onClick={() => navigate('/logout')}>
                             <LogoutIcon sx={{mr: 1}} fontSize="small"/>
                             Logout

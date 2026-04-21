@@ -37,27 +37,6 @@ class AuthViewSet(viewsets.ViewSet):
         delete_tokens(request, response)
         return response
     
-    @action(detail=False, methods=['get', 'patch', 'delete'], permission_classes=[IsAuthenticated])
-    def me(self, request):
-        if request.method == 'GET':
-            serializer = GetMeSerializer(request.user)
-            return Response({'success': True, "message": None, "data": serializer.data}, status=status.HTTP_200_OK)
-            
-        elif request.method == 'PATCH':
-            serializer = PatchMeSerializer(request.user, request.data, partial=True)
-            serializer.is_valid(raise_exception=True)
-            user = serializer.save()
-            response = PatchMeSerializer(user)
-            return Response({'success': True, "message": "User modified", "data": response.data})
-            
-        elif request.method == 'DELETE':
-            serializer = DeleteMeSerializer(request.user, request.data)
-            serializer.is_valid(raise_exception=True)
-            request.user.delete()
-            response = Response({'success': True, "message": "Account deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
-            delete_tokens(request, response)
-            return response
-    
     @action(detail=False, methods=['post'], url_path='verify-email', permission_classes=[AllowAny])
     def verify_email(self, request):
         token = request.data.get('token')

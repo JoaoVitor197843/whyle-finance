@@ -3,6 +3,8 @@ name: Deploy
 on:
     push:
         branches: [main]
+        paths: 
+            - 'backend/**'
 
 jobs:
     deploy:
@@ -19,5 +21,6 @@ jobs:
                     git pull
                     pkill gunicorn || true
                     cd backend
+                    pipenv run python manage.py migrate
                     pipenv run gunicorn WhyleFinance.wsgi:application --bind 127.0.0.1:8000 --workers 2 --daemon
 

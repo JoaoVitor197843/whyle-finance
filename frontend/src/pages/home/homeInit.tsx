@@ -93,7 +93,7 @@ const HomeInit = () => {
                     }
                 ]}
                 width={isMobile ? 200 : 300}
-                height={isMobile ? 100  :200}></PieChart>) : (<Typography variant="h5"textAlign= 'center'>Not enough data to display yet</Typography>)} 
+                height={isMobile ? 100  :200}></PieChart>) : (<Typography variant="h5"textAlign= 'center' mb={10}>Not enough data to display yet</Typography>)} 
                 </Grid>
                 <Grid >
                 <Typography variant="h5" sx={{textAlign: 'center', mb: 5}}>Category by incomes</Typography>
@@ -110,7 +110,7 @@ const HomeInit = () => {
                 sx={{
                     width: {sm: 300, xs: 200},
                     height: {sm: 200, xs: 100}
-                }}></PieChart>) : (<Typography variant="h5"textAlign='center'>Not enough data to display yet</Typography>)}
+                }}></PieChart>) : (<Typography variant="h5"textAlign='center' mb={10}>Not enough data to display yet</Typography>)}
                 </Grid>
             </Grid>
             <Box mt={5}>

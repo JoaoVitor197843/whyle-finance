@@ -9,7 +9,7 @@ api.interceptors.response.use(
     (response) => response, 
     async (error) => {
         const originalRequest = error.config
-        const publicRoutes = ['/auth/me/']
+        const publicRoutes = ['/user/me/']
         if (publicRoutes.some(route => originalRequest.url?.includes(route))) {
                 return Promise.reject(error)
                 }

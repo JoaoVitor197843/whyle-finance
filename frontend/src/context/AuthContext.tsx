@@ -14,12 +14,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode}) => {
     useEffect(() => {
         const verify = async () => {
             try {
-                await api.get('/auth/me/')
+                await api.get('/user/me/')
                 setIsAuthenticated(true)
             } catch {
                 try {
                     await api.post('/auth/token-refresh/')
-                    await api.get('/auth/me/')
+                    await api.get('/user/me/')
                     setIsAuthenticated(true)
                 } catch {
                 setIsAuthenticated(false)
