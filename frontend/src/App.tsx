@@ -12,8 +12,19 @@ import ForgotPassword from './pages/auth/forgotPassword';
 import ResetPassword from './pages/auth/resetPassword';
 import { AuthProvider } from './context/AuthContext.tsx';
 import UserInformation from './pages/user/userInformation.tsx';
+import { api } from './api/apiConnect.ts';
+import { useEffect } from 'react';
+import getCSRFToken from './utils/getCSRFToken.ts';
 
 const App = () => {
+  useEffect(() => {
+    const get_csrf = async () => {
+      if(!getCSRFToken()) {
+        await api.get('csrf/')
+      }
+    }
+    void get_csrf();
+  }, [])
   return (
   <>
 

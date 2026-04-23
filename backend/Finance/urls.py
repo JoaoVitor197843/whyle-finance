@@ -1,4 +1,5 @@
 from .viewSets import *
+from .urlsFunctions import csrf
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
@@ -10,4 +11,5 @@ router.register('user', UserViewSet, basename='user')
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('csrf/', csrf)
 ]
