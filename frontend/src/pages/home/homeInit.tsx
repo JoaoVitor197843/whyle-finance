@@ -66,7 +66,27 @@ const HomeInit = () => {
         }
         void getData();
     },[period])
-
+    const balance = byDay?.data.balance_by_period ?? [];
+    const incomes = byDay?.data.incomes_by_period ?? [];
+    const expenses = byDay?.data.expenses_by_period ?? [];
+    const allDays = [...new Set([
+        ...(balance.map((item) => item.day)),
+        ...(incomes.map((item) => item.day)),
+        ...(expenses.map((item) => item.day))
+    ])].sort()
+    const balanceMap = Object.fromEntries(balance.map(i => [i.day, i.balance]));
+    const incomeMap = Object.fromEntries(incomes.map(i => [i.day, i.total]));
+    const expenseMap = Object.fromEntries(expenses.map(i => [i.day, i.total]));
+    const balanceData = allDays.map(day => balanceMap[day] ?? 0);
+    const incomeData = allDays.map(day => incomeMap[day] ?? 0);
+    const expenseData = allDays.map(day => expenseMap[day] ?? 0);
+    const labels = allDays.map(day => {
+    const date = new Date(day);
+        return date.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric'
+        });
+    });
     if (!summary) return null
 
     return (
@@ -139,20 +159,20 @@ const HomeInit = () => {
             series={[
                 {
                     label: 'Balance',
-                    data: byDay?.data.balance_by_period.map((item) => item.balance) ?? [],
+                    data: balanceData,
                     curve: 'monotoneX',
                     showMark: false,
                 },
                 {
                     label: 'Income',
-                    data: byDay?.data.incomes_by_period.map((item) => item.total) ?? [],
+                    data: incomeData,
                     curve: 'monotoneX',
                     color: '#22c55e',
                     showMark: false,
                 },
                 {
                     label: 'Expenses',
-                    data: byDay?.data.expenses_by_period.map((item) => item.total) ?? [],
+                    data: expenseData,
                     curve: 'monotoneX',
                     color: '#ef4444',
                     showMark: false,
@@ -161,12 +181,7 @@ const HomeInit = () => {
             xAxis={[
                 {
                     scaleType: 'point',
-                    data: byDay?.data.balance_by_period.map((item) =>
-                    new Date(item.day).toLocaleDateString('en-US', {
-                        month: 'short',
-                        day: 'numeric'
-                    })
-                ) ?? [],
+                    data: labels,
                 },
             ]}/>) : (<Typography variant="h5"textAlign= 'center' mt={5} pb={5}>Not enough data to display yet</Typography>)}
 
