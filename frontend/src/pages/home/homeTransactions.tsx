@@ -200,12 +200,12 @@ const HomeTransactions = () => {
                             <TextField
                             {...field}
                             label='Description'
+                            margin='dense'
                             type="text"
                             error={!!fieldState.error}
                             helperText={fieldState.error?.message || " "}
                             variant="outlined"
                             autoComplete="off"
-                            margin='dense'
                             fullWidth/>
                         )}/>
                         <Controller 
@@ -218,6 +218,7 @@ const HomeTransactions = () => {
                             onValueChange={(values) => onChange(values.floatValue ?? '')}
                             customInput={TextField}
                             label='Value'
+                            margin='dense'
                             decimalSeparator='.'
                             thousandSeparator=','
                             decimalScale={2}
@@ -240,11 +241,17 @@ const HomeTransactions = () => {
                                 {...field} 
                                 label='Category'
                                 select
-                                value={field.value ?? ''}
+                                margin='dense'
+                                value={field.value ?? 'uncategorized'}
                                 fullWidth
-                                helperText=' '
+                                helperText='If not selected, it will be Uncategorized'
                                 onChange={(e) => {
-                                    const id = Number(e.target.value)
+                                    const value = e.target.value
+                                    if (value === 'uncategorized') {
+                                        field.onChange(null);
+                                        return;
+                                    }
+                                    const id = Number(value)
                                     field.onChange(id)
 
                                     const selectedCategory = categories?.data.find((cat) => cat.id === id)
@@ -252,6 +259,9 @@ const HomeTransactions = () => {
                                         setValue('transaction_type', selectedCategory.transaction_type)
                                     }
                                 }}>
+                                    <MenuItem value="uncategorized">
+                                        Uncategorized
+                                    </MenuItem>
                                     {categories?.data.map((category) => (
                                         <MenuItem key={category.id} value={category.id}>
                                             {category.name}
@@ -269,6 +279,8 @@ const HomeTransactions = () => {
                                 select
                                 fullWidth
                                 helperText=' '
+                                required
+                                margin='dense'
                                 value={field.value ?? ''}
                                 onChange={(e) => {
                                     field.onChange(e.target.value)
