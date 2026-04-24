@@ -39,11 +39,11 @@ class UserViewSet(viewsets.ViewSet):
         response = MeSerializer(user)
         return Response({'success': True, "message": 'Name Changed Successfully', 'data': response.data}, status=status.HTTP_200_OK)
 
-    @action(detail=False, methods=['DELETE'], url_path='delete-account', permission_classes=[IsAuthenticated])
+    @action(detail=False, methods=['post'], url_path='delete-account', permission_classes=[IsAuthenticated])
     def delete_user(self, request: Request):
         serializer = DeleteMeSerializer(request.user, request.data)
         serializer.is_valid(raise_exception=True)
         request.user.delete()
-        response = Response({'success': True, "message": "Account deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+        response = Response({'success': True, "message": "Account deleted successfully"}, status=status.HTTP_200_OK)
         delete_tokens(request, response)
         return response

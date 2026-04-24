@@ -9,4 +9,10 @@ class ChangeUsernameSerializer(serializers.Serializer):
         if not self.instance.check_password(password):
             raise ValidationError({'password': ['invalid password']})
         return attrs
-        
+    def update(self, instance, validated_data):
+        validated_data.pop('password', None)
+
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        return instance

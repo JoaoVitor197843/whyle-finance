@@ -1,8 +1,9 @@
 from . import *
 from rest_framework.exceptions import ValidationError
-from datetime import timedelta, datetime
+from datetime import timedelta
+from django.utils import timezone
 
-def periods(period: str) -> ValidationError | datetime | None:
+def periods(period: str) -> ValidationError | None:
     periods = {
             '1w': timedelta(weeks=1),
             '1m': timedelta(days=30),
@@ -15,5 +16,5 @@ def periods(period: str) -> ValidationError | datetime | None:
     delta: timedelta = periods.get(period)
     if not delta:
         return None
-    date_from = datetime.now() - delta
+    date_from = timezone.now() - delta
     return date_from
