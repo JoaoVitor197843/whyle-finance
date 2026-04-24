@@ -1,5 +1,5 @@
 from . import *
-from django.db.models import Sum, Case, When, F
+from django.db.models import Sum, Case, When, F, Window, Value, DecimalField
 from django.utils import timezone
 from rest_framework.permissions import IsAuthenticated
 from .base_model_view_set import BaseModelViewSet
@@ -64,12 +64,15 @@ class TransactionsViewSet(BaseModelViewSet):
                     total=Sum('value')).order_by('day')
         
         balance_by_period = transactions.annotate(
-            day=TruncDay('created_at')).values('day').annotate(
-            balance=Sum(
-                Case(
+            day=TruncDay('created_at')).annotate(
+            signed_amount=Case(
                     When(transaction_type='income', then=F('value')),
                     When(transaction_type='expense', then=-F('value'))
-                    ))).order_by('day')
+                    ), default=Value(0), output_field=DecimalField()).values('day').annotate(total=Sum('signed_amount')).annotate(
+                        balance=Window(
+                        expression=Sum('total'),
+                        order_by=F('day').asc()
+                    )).order_by('day')
         
         return Response({'success': True, 'message': 'Transactions by period', 
                          'data': {
