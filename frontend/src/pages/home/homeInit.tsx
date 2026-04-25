@@ -93,8 +93,8 @@ const HomeInit = () => {
         <Box sx={{width: "100%", height: "100%", p: {xs: 2, sm: 5}}}>
             <Grid container spacing={3} mb={{xs: 5, md: 10}} columns={{xs: 4, md: 12}}>
                 <Grid size={4}><MetricCard label="Balance" value={summary.data.balance}/></Grid>
-                <Grid size={4}><MetricCard label="Income" value={summary.data.income}/></Grid>
-                <Grid size={4}><MetricCard label="Expenses" value={summary.data.expenses}/></Grid>
+                <Grid size={4}><MetricCard label="Monthly Income" value={summary.data.income}/></Grid>
+                <Grid size={4}><MetricCard label="Monthly Expenses" value={summary.data.expenses}/></Grid>
                 
                 
                 

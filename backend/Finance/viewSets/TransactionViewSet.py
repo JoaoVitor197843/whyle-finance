@@ -1,12 +1,15 @@
 from . import *
-from django.db.models import Sum, Case, When, F, Window, Value, DecimalField
+from django.db.models import Sum, Case, When, F, DateTimeField
 from django.utils import timezone
 from rest_framework.permissions import IsAuthenticated
 from .base_model_view_set import BaseModelViewSet
 from rest_framework.request import Request
 from ..serializers.ByDateSerializer import ByDateSerializer
 from django.db.models.functions import TruncDay
-from ..utils import periods
+from datetime import timedelta
+from django.utils.dateparse import parse_datetime
+
+local_tz = timezone.get_current_timezone()
 
 class TransactionsViewSet(BaseModelViewSet):
     serializer_class = TransactionSerializer
@@ -20,8 +23,9 @@ class TransactionsViewSet(BaseModelViewSet):
     
     @action(detail=False, methods=['get'], url_path='summary')
     def summary(self, request):
-        transactions = Transaction.objects.filter(user=request.user, created_at__gte=periods('1m'))
-
+        now = timezone.now()
+        start_of_month = now.astimezone(local_tz).replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        transactions = Transaction.objects.filter(user=request.user)
         balance = transactions.aggregate(
             balance=Sum(
                 Case(
@@ -30,7 +34,7 @@ class TransactionsViewSet(BaseModelViewSet):
                 )
             )
         )['balance']
-
+        transactions = transactions.filter(created_at__gte=start_of_month)
         expenses = transactions.filter(transaction_type='expense').aggregate(total_spent=Sum('value'))['total_spent']
         
         incomes = transactions.filter(transaction_type='income').aggregate(total_spent=Sum('value'))['total_spent']
@@ -51,28 +55,50 @@ class TransactionsViewSet(BaseModelViewSet):
         serializer = ByDateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         transactions = Transaction.objects.filter(user=request.user)
+        daily = transactions.annotate(
+            day=TruncDay('created_at', output_field=DateTimeField(), tzinfo=local_tz),
+            signed_amount=Case(
+                When(transaction_type='income', then=F('value')),
+                When(transaction_type='expense', then=-F('value'))
+            )
+        ).values('day').annotate(total=Sum('signed_amount')).order_by('day')
         if serializer.data['period']:
             transactions = transactions.filter(created_at__gte=serializer.data['period'])
         expenses_by_period = transactions.annotate(
-            day=TruncDay('created_at')).values('day').filter(
+            day=TruncDay('created_at', output_field=DateTimeField(), tzinfo=local_tz)).values('day').filter(
                     transaction_type='expense').annotate(
                         total=Sum('value')).order_by('day')
         
         incomes_by_period = transactions.annotate(
-            day=TruncDay('created_at')).values('day').filter(
+            day=TruncDay('created_at', output_field=DateTimeField(), tzinfo=local_tz)).values('day').filter(
                 transaction_type='income').annotate(
                     total=Sum('value')).order_by('day')
         
-        balance_by_period = transactions.annotate(
-            day=TruncDay('created_at')).annotate(
-            signed_amount=Case(
-                    When(transaction_type='income', then=F('value')),
-                    When(transaction_type='expense', then=-F('value'))
-                    ), default=Value(0), output_field=DecimalField()).values('day').annotate(total=Sum('signed_amount')).annotate(
-                        balance=Window(
-                        expression=Sum('total'),
-                        order_by=F('day').asc()
-                    )).order_by('day')
+        daily_dict = {entry['day'].astimezone(local_tz).replace(hour=0,minute=0,second=0,microsecond=0): entry['total'] for entry in daily}
+
+        if daily_dict:
+            period = serializer.data.get('period')
+            start = min(daily_dict.keys())
+            if period:
+                period_dt = parse_datetime(period).astimezone(local_tz).replace(hour=0,minute=0,second=0,microsecond=0)
+                accumulated = sum(value for key, value in daily_dict.items() if key < period_dt)
+                start = max(start, period_dt)
+            else:
+                accumulated = 0
+            end = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
+            balance_by_period = []
+            
+            current = start
+            print(daily_dict)
+            while current <= end:
+                print(current, daily_dict.get(current))
+                total = daily_dict.get(current, 0)
+                accumulated += total
+                balance_by_period.append({
+                    'day': current,
+                    'balance': accumulated
+                })
+                current += timedelta(days=1)
         
         return Response({'success': True, 'message': 'Transactions by period', 
                          'data': {
