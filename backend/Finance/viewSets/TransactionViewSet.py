@@ -8,6 +8,7 @@ from ..serializers.ByDateSerializer import ByDateSerializer
 from django.db.models.functions import TruncDay
 from datetime import timedelta
 from django.utils.dateparse import parse_datetime
+import pandas as pd
 
 local_tz = timezone.get_current_timezone()
 
@@ -74,31 +75,25 @@ class TransactionsViewSet(BaseModelViewSet):
                 transaction_type='income').annotate(
                     total=Sum('value')).order_by('day')
         
-        daily_dict = {entry['day'].astimezone(local_tz).replace(hour=0,minute=0,second=0,microsecond=0): entry['total'] for entry in daily}
-
-        if daily_dict:
+        balance_df = pd.DataFrame(list(daily.values('day', 'total')))
+        if not balance_df.empty:
             period = serializer.data.get('period')
-            start = min(daily_dict.keys())
+
+            balance_df['day'] = pd.to_datetime(balance_df['day']).dt.tz_convert(local_tz).dt.normalize()
+            balance_df = balance_df.set_index('day').resample('D').sum().fillna(0)
             if period:
-                period_dt = parse_datetime(period).astimezone(local_tz).replace(hour=0,minute=0,second=0,microsecond=0)
-                accumulated = sum(value for key, value in daily_dict.items() if key < period_dt)
-                start = max(start, period_dt)
+                period_dt = pd.Timestamp(parse_datetime(period)).tz_convert(local_tz).normalize()
+                accumulated = balance_df[balance_df.index < period_dt]['total'].sum()
+                balance_df = balance_df[balance_df.index >= period_dt]
             else:
                 accumulated = 0
-            end = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
-            balance_by_period = []
-            
-            current = start
-            print(daily_dict)
-            while current <= end:
-                print(current, daily_dict.get(current))
-                total = daily_dict.get(current, 0)
-                accumulated += total
-                balance_by_period.append({
-                    'day': current,
-                    'balance': accumulated
-                })
-                current += timedelta(days=1)
+
+            end = pd.Timestamp(timezone.now()).tz_convert(local_tz).replace(hour=0, minute=0, second=0, microsecond=0)
+            balance_df = balance_df[balance_df.index <= end]
+            balance_df['balance'] = accumulated + balance_df['total'].cumsum()
+            balance_by_period = balance_df.reset_index().drop(
+                columns=['total']
+            ).to_dict('records')
         
         return Response({'success': True, 'message': 'Transactions by period', 
                          'data': {

@@ -19,7 +19,10 @@ class Transaction(models.Model):
         verbose_name = 'Transaction'
         verbose_name_plural = 'Transactions'
         ordering = ['-created_at']
-        indexes = [models.Index(fields=['category'])]
+        indexes = [
+            models.Index(fields=['category']),
+            models.Index(fields=['user', 'created_at']),
+            models.Index(fields=['user', 'transaction_type'])]
         constraints = [
             models.CheckConstraint(condition=models.Q(value__gte=Decimal(0.01)), name='value_min_range')
         ]
