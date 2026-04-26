@@ -1,5 +1,5 @@
 from . import *
-from django.db.models import Sum, Case, When, F, DateTimeField
+from django.db.models import Sum, Case, When, F, DecimalField
 from django.utils import timezone
 from rest_framework.permissions import IsAuthenticated
 from .base_model_view_set import BaseModelViewSet
@@ -7,8 +7,6 @@ from rest_framework.request import Request
 from ..serializers.ByDateSerializer import ByDateSerializer
 from django.db.models.functions import TruncDay
 from datetime import timedelta
-from django.utils.dateparse import parse_datetime
-import pandas as pd
 
 local_tz = timezone.get_current_timezone()
 
@@ -36,17 +34,26 @@ class TransactionsViewSet(BaseModelViewSet):
             )
         )['balance']
         transactions = transactions.filter(created_at__gte=start_of_month)
-        expenses = transactions.filter(transaction_type='expense').aggregate(total_spent=Sum('value'))['total_spent']
-        
-        incomes = transactions.filter(transaction_type='income').aggregate(total_spent=Sum('value'))['total_spent']
+        month_data = transactions.aggregate(
+            total_income=Sum(
+                Case(
+                    When(transaction_type='income', then=F('value'))
+                )
+            ),
+            total_expense=Sum(
+                Case(
+                    When(transaction_type='expense', then=F('value'))
+                )
+            )
+        )
 
         categories = transactions.values('category__name', 'transaction_type').annotate(total_spent=Sum('value'))
 
         return Response({'success': True, 'message': "Transactions summary",
             "data": {
             'balance': balance,
-            'expenses': expenses,
-            'income': incomes,
+            'expenses': month_data['total_expense'],
+            'income': month_data['total_income'],
             'by_category': categories,
             'requested_at': timezone.now()}
         })
@@ -56,49 +63,53 @@ class TransactionsViewSet(BaseModelViewSet):
         serializer = ByDateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         transactions = Transaction.objects.filter(user=request.user)
-        daily = transactions.annotate(
-            day=TruncDay('created_at', output_field=DateTimeField(), tzinfo=local_tz),
-            signed_amount=Case(
+        initial_balance = transactions.filter(created_at__lt=serializer.data['period']).aggregate(
+            total=Sum(Case(
                 When(transaction_type='income', then=F('value')),
-                When(transaction_type='expense', then=-F('value'))
+                When(transaction_type='expense', then=-F('value')))
             )
-        ).values('day').annotate(total=Sum('signed_amount')).order_by('day')
-        if serializer.data['period']:
-            transactions = transactions.filter(created_at__gte=serializer.data['period'])
-        expenses_by_period = transactions.annotate(
-            day=TruncDay('created_at', output_field=DateTimeField(), tzinfo=local_tz)).values('day').filter(
-                    transaction_type='expense').annotate(
-                        total=Sum('value')).order_by('day')
-        
-        incomes_by_period = transactions.annotate(
-            day=TruncDay('created_at', output_field=DateTimeField(), tzinfo=local_tz)).values('day').filter(
-                transaction_type='income').annotate(
-                    total=Sum('value')).order_by('day')
-        
-        balance_df = pd.DataFrame(list(daily.values('day', 'total')))
-        if not balance_df.empty:
-            period = serializer.data.get('period')
+        )['total'] or 0
+        daily = transactions.filter(created_at__gte=serializer.data['period']).annotate(
+            day=TruncDay('created_at')
+        ).values('day').annotate(
+            income=Sum(
+                Case(
+                    When(transaction_type='income', then=F('value')),
+                    default=0,
+                    output_field= DecimalField()
+                )
+            ),
+            expense=Sum(
+                Case(
+                    When(transaction_type='expense', then=F('value')),
+                    default=0,
+                    output_field= DecimalField()
+                )
+            )
+        ).order_by('day')
+        balance = initial_balance
+        result = []
+        daily = list(daily)
+        if daily:
+            start = daily[0]['day'].astimezone(local_tz).replace(hour=0, minute=0, second=0, microsecond=0)
+            current = start
+            end = timezone.now().astimezone(local_tz).replace(hour=0, minute=0, second=0, microsecond=0)
+            daily_items = {items['day'].astimezone(local_tz): {'income': items['income'], 'expense': items['expense']} for items in daily}
+            while current <= end:
+                item = daily_items.get(current, {'income': 0, 'expense': 0})
+                income = item['income']
+                expense = item['expense']
+                balance += income - expense
+                result.append(
+                    {'day': current,
+                     'balance': balance,
+                     'income': income,
+                     'expense': expense}
+                )
+                current += timedelta(days=1)
 
-            balance_df['day'] = pd.to_datetime(balance_df['day']).dt.tz_convert(local_tz).dt.normalize()
-            balance_df = balance_df.set_index('day').resample('D').sum().fillna(0)
-            if period:
-                period_dt = pd.Timestamp(parse_datetime(period)).tz_convert(local_tz).normalize()
-                accumulated = balance_df[balance_df.index < period_dt]['total'].sum()
-                balance_df = balance_df[balance_df.index >= period_dt]
-            else:
-                accumulated = 0
-
-            end = pd.Timestamp(timezone.now()).tz_convert(local_tz).replace(hour=0, minute=0, second=0, microsecond=0)
-            balance_df = balance_df[balance_df.index <= end]
-            balance_df['balance'] = accumulated + balance_df['total'].cumsum()
-            balance_by_period = balance_df.reset_index().drop(
-                columns=['total']
-            ).to_dict('records')
-        
         return Response({'success': True, 'message': 'Transactions by period', 
                          'data': {
-                             'balance_by_period': balance_by_period,
-                             'expenses_by_period': expenses_by_period,
-                             'incomes_by_period': incomes_by_period,
+                             'daily': result,
                              'requested_at': timezone.now()
                          }})

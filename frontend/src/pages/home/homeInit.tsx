@@ -23,22 +23,17 @@ interface Summary {
     by_category: Category[]
   }
 }
-interface ByDayItem {
+
+interface ByDayInformations {
     day: string;
     balance: number;
+    income: number;
+    expense: number;
 }
-
-interface ByDayExpenseIncomeItem {
-    day: string;
-    total: number;
-}
-
 interface ByDayData {
-    balance_by_period: ByDayItem[];
-    expenses_by_period: ByDayExpenseIncomeItem[];
-    incomes_by_period: ByDayExpenseIncomeItem[];
+    daily: ByDayInformations[];
+    requested_at: string;
 }
-
 interface ByDayResponse {
     success: boolean;
     message: string;
@@ -66,22 +61,12 @@ const HomeInit = () => {
         }
         void getData();
     },[period])
-    const balance = byDay?.data.balance_by_period ?? [];
-    const incomes = byDay?.data.incomes_by_period ?? [];
-    const expenses = byDay?.data.expenses_by_period ?? [];
-    const allDays = [...new Set([
-        ...(balance.map((item) => item.day)),
-        ...(incomes.map((item) => item.day)),
-        ...(expenses.map((item) => item.day))
-    ])].sort()
-    const balanceMap = Object.fromEntries(balance.map(i => [i.day, i.balance]));
-    const incomeMap = Object.fromEntries(incomes.map(i => [i.day, i.total]));
-    const expenseMap = Object.fromEntries(expenses.map(i => [i.day, i.total]));
-    const balanceData = allDays.map(day => balanceMap[day] ?? 0);
-    const incomeData = allDays.map(day => incomeMap[day] ?? 0);
-    const expenseData = allDays.map(day => expenseMap[day] ?? 0);
-    const labels = allDays.map(day => {
-    const date = new Date(day);
+    const allDays = byDay?.data.daily ?? []
+    const balanceData = allDays.map(i => i.balance);
+    const incomeData = allDays.map(i => i.income);
+    const expenseData = allDays.map(i => i.expense);
+    const labels = allDays.map(daily => {
+    const date = new Date(daily.day);
         return date.toLocaleDateString('en-US', {
         month: 'short',
         day: 'numeric'
@@ -152,7 +137,7 @@ const HomeInit = () => {
                     }}>{p.toUpperCase()}</Button>
                 ))}
             </Stack>
-            {byDay && byDay.data.balance_by_period.length > 1 ? (
+            {byDay && byDay?.data.daily.length > 1 ? (
             <LineChart
             sx={{mt: 5}}
             height={220}

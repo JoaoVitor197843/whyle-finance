@@ -9,7 +9,7 @@ def periods(period: str) -> ValidationError | None:
             '1m': timedelta(days=30),
             '6m': timedelta(days=180),
             '12m': timedelta(days=365),
-            'all': None
+            'all': timedelta(days=730)
         }
     if period not in periods:
         raise ValidationError({'period': 'Invalid Period'})
