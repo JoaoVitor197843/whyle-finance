@@ -7,6 +7,7 @@ WhyleFinance is a personal finance management platform to track expenses, organi
 ![GitHub License](https://img.shields.io/github/license/JoaoVitor197843/whyle-finance)
 
 ---
+
 ## Screenshots
 
 ![Landing Page](./screenshots/landing.png)
@@ -29,8 +30,9 @@ WhyleFinance is a personal finance management platform to track expenses, organi
 ## Tech Stack
 
 ### Frontend
+
 | Technology | Usage |
-|---|---|
+| --- | --- |
 | React + TypeScript | UI framework |
 | Vite | Build tool |
 | MUI (Material UI) | Component library |
@@ -40,8 +42,9 @@ WhyleFinance is a personal finance management platform to track expenses, organi
 | React Router | Client-side routing |
 
 ### Backend
+
 | Technology | Usage |
-|---|---|
+| --- | --- |
 | Python + Django | Web framework |
 | Django REST Framework | REST API |
 | SimpleJWT | JWT authentication |
@@ -50,11 +53,12 @@ WhyleFinance is a personal finance management platform to track expenses, organi
 ## Running Locally
 
 ### Prerequisites
+
 - Python 3.13+
 - Pipenv
 - Node.js 18+
 
-### Backend
+### Backend Running
 
 ```bash
 git clone https://github.com/JoaoVitor197843/whyle-finance.git
@@ -67,7 +71,7 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-### Frontend
+### Frontend Running
 
 ```bash
 cd frontend
@@ -79,6 +83,7 @@ npm run dev
 ### Environment Variables
 
 **Backend `.env`:**
+
 ```env
 DEVELOPMENT_SECRET_KEY=
 PRODUCTION_SECRET_KEY=
@@ -91,6 +96,7 @@ RESEND_EMAIL=
 ```
 
 **Frontend `.env`:**
+
 ```env
 VITE_API_URL=
 ```

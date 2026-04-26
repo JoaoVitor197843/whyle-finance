@@ -10,6 +10,7 @@ def set_tokens(user):
     key='access_token',
     value=str(access),
     httponly=True,
+    max_age=60 * 30,
     secure=True,  # Set to True in production with HTTPS
     samesite='None'  # Adjust as needed (None, Lax, Strict)
     )
@@ -17,6 +18,7 @@ def set_tokens(user):
     key='refresh_token',
     value=str(refresh),
     httponly=True,
+    max_age= 60 * 60 * 24,
     secure=True,  # Set to True in production with HTTPS
     samesite='None'  # Adjust as needed (None, Lax, Strict)
     )
