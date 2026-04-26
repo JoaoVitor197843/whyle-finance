@@ -54,6 +54,7 @@ LOGGING = {
 
 #CORS Settings
 CORS_ALLOW_CREDENTIALS = True
+CORS_PREFLIGHT_MAX_AGE = 86400
 CORS_ALLOWED_ORIGINS = [
     'https://app.whylefinance.dev',
 ]
