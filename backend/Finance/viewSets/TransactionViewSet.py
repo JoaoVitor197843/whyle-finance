@@ -33,13 +33,13 @@ class TransactionsViewSet(BaseModelViewSet):
                 SUM(CASE WHEN transaction_type = 'income' THEN value ELSE -value END) as balance,
                 SUM(CASE WHEN transaction_type = 'income' AND created_at >= %s THEN value ELSE 0 END) as income,
                 SUM(CASE WHEN transaction_type = 'expense' AND created_at >= %s THEN value ELSE 0 END) as expense
-            FROM Finance_transaction
+            FROM "Finance_transaction"
             WHERE user_id = %s
         """
         category_query = """
             SELECT c.name, t.transaction_type, SUM(t.value) as total
-            FROM Finance_transaction t
-            LEFT JOIN Finance_category c ON t.category_id = c.id
+            FROM "Finance_transaction" t
+            LEFT JOIN "Finance_category" c ON t.category_id = c.id
             WHERE t.user_id = %s AND t.created_at >= c.id
             GROUP BY c.name, t.transaction_type
         """
