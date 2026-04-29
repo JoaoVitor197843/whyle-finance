@@ -1,9 +1,7 @@
 from . import *
 from typing import Any, Dict
 class TransactionSerializer(serializers.ModelSerializer):
-    category_name = serializers.SerializerMethodField()
-    def get_category_name(self, obj):
-        return obj.category.name if obj.category else 'Uncategorized'
+    category_name = serializers.ReadOnlyField(source='cat_name')
     class Meta:
         model = Transaction
         fields = (
