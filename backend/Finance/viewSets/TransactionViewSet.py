@@ -40,13 +40,13 @@ class TransactionsViewSet(BaseModelViewSet):
             SELECT c.name, t.transaction_type, SUM(t.value) as total
             FROM "Finance_transaction" t
             LEFT JOIN "Finance_category" c ON t.category_id = c.id
-            WHERE t.user_id = %s AND t.created_at >= c.id
+            WHERE t.user_id = %s AND t.created_at >= %s
             GROUP BY c.name, t.transaction_type
         """
         with connection.cursor() as cursor:
             cursor.execute(summary_query, [start_of_month, start_of_month, request.user.id])
             summary_row = cursor.fetchone()
-            cursor.execute(category_query, [request.user.id])
+            cursor.execute(category_query, [request.user.id, start_of_month])
             category_row = cursor.fetchall()
 
         categories = [{'category__name': r[0], 'transaction_type': r[1], 'total_spent': float(r[2])}
