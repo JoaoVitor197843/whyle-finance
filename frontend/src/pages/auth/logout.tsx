@@ -47,7 +47,10 @@ const Logout = () => {
         }
         //eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isLogout])
-    if(isLogout === null) return <CircularProgress />
+    if(isLogout === null) return (
+    <Box sx={{height: '100%', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+        <CircularProgress />
+    </Box>)
     return (
         <Box>
             {isLogout ? (<Dialog open>
