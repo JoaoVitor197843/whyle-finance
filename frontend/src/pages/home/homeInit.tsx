@@ -9,6 +9,7 @@ import Grid from "@mui/material/Grid";
 import { LineChart, PieChart } from '@mui/x-charts'
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
+import CircularProgress from "@mui/material/CircularProgress";
 interface Category {
   total_spent: number
   category__name: string
@@ -72,7 +73,10 @@ const HomeInit = () => {
         day: 'numeric'
         });
     });
-    if (!summary) return null
+    if (!summary) return (
+    <Box sx={{width: "100%", height: "100%"}}>
+        <CircularProgress />
+    </Box>)
 
     return (
         <Box sx={{width: "100%", height: "100%", p: {xs: 2, sm: 5}}}>
