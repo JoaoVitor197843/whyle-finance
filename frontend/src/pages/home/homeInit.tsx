@@ -56,7 +56,7 @@ const HomeInit = () => {
     }, [])
     useEffect(() => {
         const getData = async () => {
-            const response = await api.post('/transactions/by-date/', {period: period})
+            const response = await api.get(`/transactions/by-date?period=${period}`)
             setByDay(response.data)
         }
         void getData();

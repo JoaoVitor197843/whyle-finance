@@ -16,5 +16,5 @@ def periods(period: str) -> ValidationError | None:
     delta: timedelta = periods.get(period)
     if not delta:
         return None
-    date_from = timezone.now() - delta
+    date_from = (timezone.now() - delta).date()
     return date_from
