@@ -65,7 +65,7 @@ class TransactionsViewSet(BaseModelViewSet):
         end = timezone.now().date()
         query = """
             WITH date_series AS (
-                SELECT generate_series(%(start)s::date, %(end)s::date, '1 day')::date AS day
+                SELECT generate_series(GREATEST((SELECT MIN(created_at) FROM "Finance_transaction"), %(start)s::date), %(end)s::date, interval '1 day')::date AS day
             ),
             daily_sums AS (
                 SELECT
