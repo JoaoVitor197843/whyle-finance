@@ -71,7 +71,7 @@ class TransactionsViewSet(BaseModelViewSet):
                 SELECT
                     created_at::date as day,
                     SUM(CASE WHEN transaction_type = 'income' THEN value ELSE 0 END) as daily_income,
-                    SUM(CASE WHEN transaction_type = 'expense' THEN value ELSE 0 END) as daily_expense
+                    SUM(CASE WHEN transaction_type = 'expense' THEN value ELSE 0 END) as daily_expense,
                     SUM(CASE WHEN transaction_type = 'income' THEN value ELSE -value END) as daily_bal
                 FROM "Finance_transaction"
                 WHERE user_id = %(user)s
