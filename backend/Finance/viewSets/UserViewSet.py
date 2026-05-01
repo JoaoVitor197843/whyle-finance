@@ -17,6 +17,13 @@ class UserViewSet(viewsets.ViewSet):
         serializer = MeSerializer(request.user)
         return Response({'success': True, "message": None, "data": serializer.data}, status=status.HTTP_200_OK)
     
+    @action(detail=False, methods=['GET'], url_path='verify')
+    def verify(self, request: Request):
+        if request.user.is_authenticated:
+            return Response({'success': True, "message": 'User Found'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'success': False, 'message': 'User Not Exists'}, status=status.HTTP_200_OK)
+    
     @action(detail=False, methods=['PATCH'], url_path='change-username', permission_classes=[IsAuthenticated])
     def change_username(self, request: Request):
         serializer = ChangeUsernameSerializer(request.user, request.data)
