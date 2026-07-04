@@ -4,6 +4,8 @@ from django.contrib.auth import get_user_model
 from rest_framework import status
 from django_ratelimit.decorators import ratelimit
 from django.utils.decorators import method_decorator
+from drf_spectacular.utils import extend_schema, inline_serializer
+from rest_framework import serializers
 
 
 from ..utils import *
@@ -13,7 +15,22 @@ User = get_user_model()
 
 class AuthViewSet(viewsets.ViewSet):
 
-    
+    @extend_schema(
+        request=LoginSerializer,
+        responses={
+            200: inline_serializer(
+            name='LoginResponse',
+            fields={
+                'success': serializers.BooleanField(),
+                'message': serializers.CharField()
+            }
+            ),
+            401: inline_serializer(
+                name='LoginAuthError',
+                fields= {'detail': serializers.CharField()}
+            )
+        }
+    )
     @action(detail=False, methods=['post'], url_path='login', permission_classes=[AllowAny])
     @method_decorator(ratelimit(key='ip', rate='5/m', block=True))
     def login(self, request):
@@ -23,6 +40,32 @@ class AuthViewSet(viewsets.ViewSet):
         response = set_tokens(user)
         return response
 
+    @extend_schema(
+        request=RegisterSerializer,
+        responses={
+            200: inline_serializer(
+                name='RegisterSuccessful',
+                fields= {
+                    'success': serializers.BooleanField(),
+                    'message': serializers.CharField()
+                }
+            ),
+            400: inline_serializer(
+                name='RegisterValidationError',
+                fields= {
+                    'email': serializers.ListField(
+                        child=serializers.CharField(), required=False
+                    ),
+                    'first_name': serializers.ListField(
+                        child=serializers.CharField(), required=False
+                    ),
+                    'password': serializers.ListField(
+                        child=serializers.CharField(), required=False
+                    ),
+                }
+            )
+            }
+    )
     @action(detail=False, methods=['post'], url_path='register', permission_classes=[AllowAny])
     def register(self, request):
         serializer = RegisterSerializer(data=request.data)
@@ -31,12 +74,39 @@ class AuthViewSet(viewsets.ViewSet):
         send_verification_email(user)
         return Response({'success': True, "message": "Registration successful, please verify your email"}, status=status.HTTP_201_CREATED)
 
+    @extend_schema(
+        responses=inline_serializer(
+            'LogoutSuccessful',
+            fields={
+                'success': serializers.BooleanField(),
+                'message': serializers.CharField()
+            }
+        )
+    )
     @action(detail=False, methods=['post'], permission_classes=[IsAuthenticated])
     def logout(self, request):
         response = Response({'success': True, "message": "Logout successful"}, status=status.HTTP_200_OK)
         delete_tokens(request, response)
         return response
     
+    @extend_schema(
+        request= inline_serializer(
+            name='VerifyEmailRequest',
+            fields= {
+                'token': serializers.CharField(),
+                'uid': serializers.CharField()
+            }
+        ),
+        responses= {
+            200: inline_serializer(
+                name='VerifyEmailSucessful',
+                fields= {
+                    'success': serializers.BooleanField(),
+                    'message': serializers.CharField()
+                }
+            )
+        }
+    )
     @action(detail=False, methods=['post'], url_path='verify-email', permission_classes=[AllowAny])
     def verify_email(self, request):
         token = request.data.get('token')

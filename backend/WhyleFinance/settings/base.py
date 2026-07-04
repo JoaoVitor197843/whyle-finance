@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
+    'drf_spectacular'
 ]
 
 MIDDLEWARE = [
@@ -119,6 +120,7 @@ REST_FRAMEWORK = {
         'Finance.utils.auth.CookieJWTAuthentication',
        ],
     'EXCEPTION_HANDLER': 'Finance.exceptions.custom_exception_handler.custom_exception_handler',
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 # JWT Settings
@@ -137,3 +139,9 @@ CACHES = {
     }
 }
 PASSWORD_RESET_TIMEOUT = 3600
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'WhyleFinance API',
+    'DESCRIPTION': 'API do WhyleFinance',
+    'VERSION': '1.0.0'
+}
